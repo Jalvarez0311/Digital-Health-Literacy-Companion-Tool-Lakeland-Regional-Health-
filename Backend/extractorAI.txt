@@ -1,0 +1,1 @@
+This is the plaaceholder for the code that will be for sending/extracting the info for the model
