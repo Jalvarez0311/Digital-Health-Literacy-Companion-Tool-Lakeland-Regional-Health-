@@ -1,0 +1,1 @@
+This is the placeholder for the information extractor of the database. It would extract from Serner and transfer to supabase.  
