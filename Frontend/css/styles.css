@@ -1,0 +1,22 @@
+/* Temporary, we can make it look better later :)*/
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f5f7;
+  margin: 0;
+}
+.container {
+  width: 360px;
+  margin: 80px auto;
+}
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+button {
+  margin-top: 12px;
+  padding: 8px 15px;
+  font-size: 16px;
+}

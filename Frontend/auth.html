@@ -1,0 +1,47 @@
+<!-- Login/Signup Page -->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset = "UTF-8">
+        <meta name = "viewport" content = "width=device-width, initial-scale=1.0">
+        <title>Login/Signup</title>
+        <link rel = "stylesheet" href = "css/styles.css">
+        <!-- defer: Downloads app.js while parsing HTML -->
+        <script defer src = "js/app.js"></script>
+    </head>
+
+    <body>
+    <div class = "container" id = "authForms">
+
+        <!-- Back Button -->
+        <button id = "backBtn">Go Back</button>
+
+        <!-- Login Form -->
+        <form id = "loginForm">
+        <h2 id = "loginTitle">Login</h2>
+        <!-- Require text to be filled -->
+        <input type = "text" id = "username" placeholder = "Username" required>
+        <input type = "password" id = "password" placeholder = "Password" required>
+        <div id = "passwordStrength"></div>
+        <button type = "submit">Login</button>
+        </form>
+
+        <!-- Sign Up Link -->
+        <p><br>Don't have an account? <a href="#" id="showSignup">Sign Up</a></p>
+
+        <!-- Signup Form -->
+        <form id = "signupForm" style = "display:none;">
+        <h2 id = "signupTitle">Sign Up</h2>
+        <input type = "text" id = "newUsername" placeholder = "Username" required>
+        <input type ="password" id = "newPassword" placeholder = "Password" required>
+        <div id = "signupPasswordStrength"></div>
+        <button type = "submit">Sign Up</button>
+        <div id = "signupMessage"></div>
+        </form>
+
+        <div id = "loginMessage"></div>
+    </div>
+</body>
+
+</html>
