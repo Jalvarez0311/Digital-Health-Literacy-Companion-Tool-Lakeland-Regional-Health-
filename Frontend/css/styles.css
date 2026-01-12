@@ -8,6 +8,7 @@ body {
 .container {
   width: 360px;
   margin: 80px auto;
+  text-align: center;
 }
 .card {
   background: white;
