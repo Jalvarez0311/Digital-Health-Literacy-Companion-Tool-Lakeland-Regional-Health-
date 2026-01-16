@@ -1,30 +1,52 @@
 import os
-import mysql.connector
-
 #import chatbot
+import psycopg2
 
 # Adding imports for supabase for DB connection
-import supabase
+from dotenv import load_dotenv
 
-url: str = os.environ.get("SUPABASE_URL")
-# Below is the ENV link to the API KEY, please don't leak the API key!!!
-key: str = os.environ.get("SUPABASE_KEY")
 
-#placeholders for all the connectors
-mydb = mysql.connector.connect(
- host = 'placeholder',
- user = 'placeholder',
- password = 'placehodler',
- port = 'placeholder',
- database = 'placeholder'   
-)
 
-#get data
-query = "SELECT * FROM patient_name;" #subject to change once the database is made available
-cursor = mydb.cursor()
-cursor.execute(query)
+# Fetch variables from .env
+load_dotenv()
+USER: str = os.getenv("user")
+PASSWORD: str = os.getenv("password")
+HOST: str = os.getenv("host")
+PORT: str = os.getenv("port")
+DBNAME: str = os.getenv("dbname")
+
+# Check for .env files
+if not (USER or PASSWORD or HOST or PORT or DBNAME):
+    raise ValueError("Environment files not populated. Please setup your environment variables with a .env file.")
+
+# Connect to the database
+try:
+    connection = psycopg2.connect(
+        user=USER,
+        password=PASSWORD,
+        host=HOST,
+        port=PORT,
+        dbname=DBNAME
+    )
+    print("Connection successful!")
+
+    # Create a cursor to execute SQL queries
+    cursor = connection.cursor()
+
+    # Example query
+    cursor.execute("SELECT NOW();")
+    result = cursor.fetchone()
+    print("Current Time:", result)
+
+    # Close the cursor and connection
+    cursor.close()
+    connection.close()
+    print("Connection closed.")
+
+except Exception as e:
+    print(f"Failed to connect: {e}")
 
 #this is where the information will be sent to the AI database
 #Note, I have no Idea how it will work, this is just a placeholder
-chatbot.attach(cursor.fetchall())
-chatbot.ask("Create Discharge papers for the patient...") #query to be increased/tweaked later
+# chatbot.attach(cursor.fetchall())
+# chatbot.ask("Create Discharge papers for the patient...") #query to be increased/tweaked later
