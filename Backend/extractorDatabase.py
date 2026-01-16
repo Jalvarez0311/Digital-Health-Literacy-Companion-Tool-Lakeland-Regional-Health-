@@ -1,6 +1,14 @@
 import os
 import mysql.connector
+
 #import chatbot
+
+# Adding imports for supabase for DB connection
+import supabase
+
+url: str = os.environ.get("SUPABASE_URL")
+# Below is the ENV link to the API KEY, please don't leak the API key!!!
+key: str = os.environ.get("SUPABASE_KEY")
 
 #placeholders for all the connectors
 mydb = mysql.connector.connect(

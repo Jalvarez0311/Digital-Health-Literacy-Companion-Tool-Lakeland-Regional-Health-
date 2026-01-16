@@ -1,0 +1,8 @@
+# Environment Variable to hide Dev secrets
+*.env
+
+# Exclude IDE specific files (I'm using Jetbrains Suite and they love to make IDE specific files)
+*.idea
+
+
+
