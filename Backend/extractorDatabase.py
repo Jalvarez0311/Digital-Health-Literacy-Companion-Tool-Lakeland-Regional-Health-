@@ -16,7 +16,7 @@ PORT: str = os.getenv("port")
 DBNAME: str = os.getenv("dbname")
 
 # Check for .env files
-if not (USER or PASSWORD or HOST or PORT or DBNAME):
+if not (USER and PASSWORD and HOST and PORT and DBNAME):
     raise ValueError("Environment files not populated. Please setup your environment variables with a .env file.")
 
 # Connect to the database
