@@ -1,0 +1,26 @@
+<!-- Welcome Page -->
+
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset = "UTF-8">
+        <meta name = "viewport" content = "width=device-width, initial-scale=1.0">
+        <title>Digital Health Literacy Companion Tool</title>
+        <link rel="stylesheet" href="{% static 'companion/css/styles.css' %}">
+        <script defer src="{% static 'companion/js/app.js' %}"></script>
+    </head>
+
+    <body>
+    <!-- Welcome Page -->
+    <div class="container" id="welcomePage">
+        <h1>Welcome!</h1>
+        <p>I am a:</p>
+        <!-- Buttons -->
+        <button id="nurseBtn">Nurse</button>
+        <button id="patientBtn">Patient</button>
+    </div>
+    </body>
+
+</html>

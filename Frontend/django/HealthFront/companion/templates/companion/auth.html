@@ -1,0 +1,46 @@
+<!-- Login/Signup Page -->
+
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset = "UTF-8">
+        <meta name = "viewport" content = "width=device-width, initial-scale=1.0">
+        <title>Login/Signup</title>
+        <link rel="stylesheet" href="{% static 'companion/css/styles.css' %}">
+        <!-- defer: Downloads app.js while parsing HTML -->
+        <script defer src="{% static 'companion/js/app.js' %}"></script>
+    </head>
+
+    <body>
+    <div class = "container" id = "authForms">
+
+        <!-- Back Button -->
+        <button id = "backBtn">Go Back</button>
+
+        <!-- Login Form -->
+        <form id="loginForm" method="POST" action="{% url 'auth' %}">
+            {% csrf_token %}
+            <input type="text" name="username" id="username" placeholder="Username" required>
+            <input type="password" name="password" id="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+            <div id="loginMessage">{{ message }}</div>
+        </form>
+
+        <!-- Sign Up Link -->
+        <p><br>Don't have an account? <a href="#" id="showSignup">Sign Up</a></p>
+
+        <!-- Signup Form -->
+        <form id="signupForm" style="display:none;">
+            <h2 id="signupTitle">Sign Up</h2>
+            <input type="text" id="newUsername" placeholder="Username" required>
+            <input type="password" id="newPassword" placeholder="Password" required>
+            <div id="signupPasswordStrength"></div>
+            <button type="submit">Sign Up</button>
+            <div id="signupMessage"></div>
+        </form>
+    </div>
+</body>
+
+</html>
