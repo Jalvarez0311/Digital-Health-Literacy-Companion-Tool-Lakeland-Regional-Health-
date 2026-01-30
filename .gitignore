@@ -1,0 +1,20 @@
+# Environment Variable to hide Dev secrets
+*.env
+
+# Exclude IDE specific files (I'm using Jetbrains Suite and they love to make IDE specific files)
+*.idea
+
+# Python caches
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Django stuff
+*.sqlite3
+*.log
+
+# Virtual environment
+venv/
+env/
+ENV/
+
