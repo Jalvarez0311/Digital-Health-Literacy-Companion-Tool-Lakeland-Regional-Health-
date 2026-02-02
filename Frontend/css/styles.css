@@ -5,7 +5,7 @@ html, body {
 }
 body {
   font-family: Arial, sans-serif;
-  background: blue;
+  background: white;
   margin: 0;
   display: flex;
   justify-content: center; /* horizontal center */
