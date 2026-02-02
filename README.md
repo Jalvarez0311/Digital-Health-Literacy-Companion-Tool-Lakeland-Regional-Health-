@@ -4,12 +4,23 @@ This project aims to develop a digital health literacy companion that replaces g
 
 How to deploy the Django server:
 1. Clone the repository
-2. git switch frontend-login-zaina                              // (and git pull if needed)
-3. cd .\Frontend\django\HealthFront
-4. python -m venv venv                                          // (to create the virtual environment)
-5. Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass   // (in Powershell, if needed)
-6. venv\Scripts\activate                                        // (to activate the virtual environment)
-7. pip install Django
-8. python manage.py migrate                                     // (run database migrations)
-9. python manage.py runserver                                   // (to run the server)
-10. Finally, go to the address that's listed saying "Starting development server at XXXXXXXXXX"
+2. Git pull if needed
+3. Go to the HealthFront directory in Powershell
+4. Create the virtual environment
+5. Bypass restrictions
+6. Activate virtual environment
+7. Install Django
+8. Run database migrations
+9. Run the server
+10. Go to the address that's listed
+
+git switch frontend-login-zaina
+cd .\Frontend\django\HealthFront
+python -m venv venv
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass   
+venv\Scripts\activate
+pip install Django
+python manage.py migrate
+python manage.py runserver
+
+
