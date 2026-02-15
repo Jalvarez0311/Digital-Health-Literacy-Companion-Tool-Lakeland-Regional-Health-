@@ -1,0 +1,19 @@
+{% extends "companion/base.html" %}
+
+{% block title %}Patient Dashboard{% endblock %}
+{% block header_title %}Patient Dashboard{% endblock %}
+
+{% block header_buttons %}
+<!-- Logout button instead of back button -->
+<button class="logout-button" onclick="window.location.href='{% url 'logout' %}'">Logout</button>
+{% endblock %}
+
+{% block content %}
+<div class="main-center">
+    <div class="role-cards">
+        <a href="{% url 'discharge_summary' %}" class="role-card">Create Discharge Summary</a>
+        <a href="{% url 'survey' %}" class="role-card">Take Survey</a>
+        <a href="{% url 'patient_info' %}" class="role-card">View Patient Info</a>
+    </div>
+</div>
+{% endblock %}

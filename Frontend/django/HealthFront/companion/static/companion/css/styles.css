@@ -1,0 +1,142 @@
+/* General Styles */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
+}
+
+/* Header & Footer */
+header, footer {
+    background-color: #888;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    position: relative;
+}
+
+/* Header Buttons */
+.back-button, .logout-button {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 1px solid #333;
+    background-color: #eee;
+    cursor: pointer;
+    z-index: 10;
+    text-decoration: none;
+    color: black;          
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.back-button:hover, .logout-button:hover {
+    background-color: #ddd;
+}
+
+/* Main Content */
+main, .main-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+/* Role Cards (Homepage / Dashboards) */
+.role-cards {
+    display: flex;
+    gap: 2rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.role-card {
+    width: 200px;
+    height: 150px;
+    border: 1px solid #333;
+    background-color: #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+    border-radius: 10px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+    text-decoration: none; /* remove underline for <a> links */
+    color: black;          /* text color for links */
+}
+
+.role-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    background-color: #bbb;
+}
+
+/* Forms (Login / Signup) */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+form div {
+    margin-bottom: 1rem;
+    width: 100%;
+    max-width: 300px;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: bold;
+}
+
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #333;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* Buttons inside forms */
+form button {
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    border: 1px solid #333;
+    background-color: #eee;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+form button:hover {
+    background-color: #ddd;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .role-cards {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    .back-button, .logout-button {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+    }
+    header, footer {
+        padding: 0.8rem;
+    }
+}

@@ -1,0 +1,14 @@
+{% extends "companion/base.html" %}
+
+{% block title %}Welcome!{% endblock %}
+{% block header_title %}Welcome!{% endblock %}
+
+{% block content %}
+<div class="main-center">
+    <div class="role-cards">
+        <!-- Role cards as links with role query parameter -->
+        <a href="{% url 'login' %}?role=nurse" class="role-card">Nurse</a>
+        <a href="{% url 'login' %}?role=patient" class="role-card">Patient</a>
+    </div>
+</div>
+{% endblock %}

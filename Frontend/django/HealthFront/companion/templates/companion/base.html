@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Health Companion{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'companion/css/styles.css' %}">
+</head>
+<body>
+
+<header>
+    {% block header_buttons %}{% endblock %}
+    <h1>{% block header_title %}Welcome!{% endblock %}</h1>
+</header>
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<footer>
+    <p>© 2026 Lakeland Regional Health</p>
+</footer>
+
+</body>
+</html>

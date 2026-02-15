@@ -1,0 +1,43 @@
+{% extends "companion/base.html" %}
+
+{% block title %}Signup{% endblock %}
+
+{% block header_buttons %}
+<button class="back-button" onclick="window.history.back()">← Back</button>
+{% endblock %}
+
+{% block header_title %}Signup{% endblock %}
+
+{% block content %}
+<div class="main-center">
+    <form id="signup-form">
+        <!-- Keep track of the role from the previous page -->
+        <input type="hidden" id="role" value="{{ request.GET.role }}">
+        <div>
+            <label>Username</label>
+            <input type="text" id="username" required>
+        </div>
+        <div>
+            <label>Password</label>
+            <input type="password" id="password" required>
+        </div>
+        <button type="submit">Signup</button>
+        <p id="success-msg" style="color:green; display:none;">Account created! Redirecting to login...</p>
+    </form>
+</div>
+
+<script>
+document.getElementById('signup-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Show success message
+    document.getElementById('success-msg').style.display = 'block';
+
+    // Redirect after 1 second to the login page, preserving role
+    setTimeout(() => {
+        const role = document.getElementById('role').value;
+        window.location.href = "/login/?role=" + encodeURIComponent(role);
+    }, 1000);
+});
+</script>
+{% endblock %}

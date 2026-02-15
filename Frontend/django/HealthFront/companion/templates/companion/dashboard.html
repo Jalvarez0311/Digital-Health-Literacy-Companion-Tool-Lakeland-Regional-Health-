@@ -1,27 +1,15 @@
-{% load static %}
+{% extends "companion/base.html" %}
 
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Patient Dashboard</title>
+{% block title %}Dashboard{% endblock %}
 
-        <link rel="stylesheet" href="{% static 'companion/css/styles.css' %}">
-        <script defer src="{% static 'companion/js/app.js' %}"></script>
-    </head>
+{% block content %}
+<h2>Dashboard</h2>
 
-    <body>
-        <div class="container" id="dashboard">
+<a href="{% url 'create_discharge' %}" class="btn">
+    Create Discharge Summary
+</a>
 
-            <!-- Welcome Message -->
-            <h2>Welcome Back, <span id="patientName">Patient Name</span>!</h2>
-
-            <!-- Buttons (stacked vertically) -->
-            <button id="viewDischargeBtn">View Discharge Summary</button>
-            <button id="viewPastBtn">View Past Summaries</button>
-            <button id="logoutBtn">Log Out</button>
-
-        </div>
-    </body>
-</html>
+<a href="{% url 'survey' %}" class="btn">
+    Complete Survey
+</a>
+{% endblock %}

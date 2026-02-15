@@ -1,8 +1,14 @@
-from django.urls import path
-from .views import welcome, auth_view, dashboard
+from django.urls import path 
+from . import views
 
 urlpatterns = [
-    path('', welcome, name='welcome'),       # Starting page - welcome page
-    path('auth/', auth_view, name='auth'),   # Login page
-    path('dashboard/', dashboard, name='dashboard'),  # Dashboard
+    path('', views.home, name='home'),
+    path('login/', views.login_page, name='login'),
+    path('signup/', views.signup_page, name='signup'),
+    path('logout/', views.logout_user, name='logout'),  # New logout URL
+    path('dashboard/nurse/', views.dashboard_nurse, name='dashboard_nurse'),
+    path('dashboard/patient/', views.dashboard_patient, name='dashboard_patient'),
+    path('discharge/', views.create_discharge, name='discharge_summary'),
+    path('survey/', views.survey, name='survey'),
+    path('patient-info/', views.patient_info, name='patient_info'),
 ]
