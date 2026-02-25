@@ -15,8 +15,8 @@ How to deploy the Django server:
 10. Go to the address that's listed
 
 ```
-git switch frontend-login-zaina
-cd .\Frontend\django\HealthFront
+git switch frontend-zaina-new
+cd .\Frontend\django\HealthFront\companion
 python -m venv venv
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 venv\Scripts\activate
