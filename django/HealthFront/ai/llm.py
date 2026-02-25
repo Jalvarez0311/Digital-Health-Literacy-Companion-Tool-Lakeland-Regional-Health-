@@ -10,9 +10,13 @@ from .models import PatientDischargeContext
 load_dotenv()
 
 
-llm = ChatAnthropic(
-    model="claude-haiku-4-5-20251001",
+# llm = ChatAnthropic(
+#     model="claude-haiku-4-5-20251001",
+# )
+llm = ChatGroq(
+    model="moonshotai/kimi-k2-instruct-0905",
 )
+
 
 _SYSTEM_PROMPT = """
 You are a clinical documentation assistant for Lakeland Regional Health.
@@ -21,7 +25,8 @@ patient discharge summary for a nurse to review and hand to the patient.
 
 Guidelines:
 - Use plain, patient-friendly language (avoid heavy medical jargon).
-- Organise the document with clearly labelled sections.
+- Still keep detailed information, but make it more patient-friendly.
+- Organize the document with clearly labeled sections.
 - Highlight any diagnoses and procedures from the most recent hospitalisation.
 - Reference prior hospitalisations only where they provide relevant context.
 - Include a short "What to watch for" section with warning signs related to

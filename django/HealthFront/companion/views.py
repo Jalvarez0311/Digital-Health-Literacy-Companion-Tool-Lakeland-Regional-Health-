@@ -42,6 +42,7 @@ def login_page(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+            request.session['role'] = role  # persist role for the session
             if role == "nurse":
                 return redirect('dashboard_nurse')
             else:
@@ -64,7 +65,9 @@ def dashboard_patient(request):
     return render(request, "companion/dashboard_patient.html")
 
 def create_discharge(request):
-    """Renders the discharge form — populates the patient dropdown from Supabase."""
+    """Nurses only — renders the discharge form with the patient dropdown."""
+    if request.session.get('role') != 'nurse':
+        return redirect('home')
     try:
         patients = fetch_patient_list()
     except Exception:
@@ -81,6 +84,9 @@ def generate_discharge(request):
     Queries the patient's full medical history from Supabase, sends it to the
     LLM, and returns the generated discharge document as JSON.
     """
+    if request.session.get('role') != 'nurse':
+        return JsonResponse({"error": "Access denied."}, status=403)
+
     try:
         patient_id = int(request.POST.get("patient_id", 0))
         if not patient_id:

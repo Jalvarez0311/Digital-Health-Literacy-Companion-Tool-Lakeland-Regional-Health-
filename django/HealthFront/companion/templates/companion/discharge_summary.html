@@ -62,9 +62,21 @@
     </form>
 
     <!-- Result area — shown after the AI responds -->
-    <div id="result-area" style="display:none; margin-top:2rem;">
-        <h2 id="result-heading"></h2>
-        <pre id="result-doc" style="white-space:pre-wrap;"></pre>
+    <div id="result-area" style="display:none; margin-top:2.5rem;">
+        <h2 id="result-heading" style="margin-bottom:1rem;"></h2>
+        <div id="result-doc"
+             style="background:#fff;
+                    border:1px solid #d0d0d0;
+                    border-radius:6px;
+                    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+                    padding:2rem 2.5rem;
+                    max-width:780px;
+                    margin:0 auto;
+                    font-family:Georgia, serif;
+                    font-size:0.97rem;
+                    line-height:1.75;
+                    color:#1a1a1a;">
+        </div>
     </div>
 
     <p id="error-msg" style="color:red; display:none;"></p>
@@ -99,7 +111,7 @@ document.getElementById('discharge-form').addEventListener('submit', function(e)
         document.getElementById('error-msg').style.display = 'none';
         document.getElementById('result-heading').textContent =
             'Discharge Document — ' + data.patient_name;
-        document.getElementById('result-doc').textContent = data.document;
+        document.getElementById('result-doc').innerHTML = marked.parse(data.document);
         document.getElementById('result-area').style.display = 'block';
         document.getElementById('result-area').scrollIntoView({ behavior: 'smooth' });
     })
@@ -111,4 +123,8 @@ document.getElementById('discharge-form').addEventListener('submit', function(e)
     });
 });
 </script>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 {% endblock %}
