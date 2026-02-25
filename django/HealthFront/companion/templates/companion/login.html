@@ -1,0 +1,38 @@
+{% extends "companion/base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block header_buttons %}
+<button class="back-button" onclick="window.history.back()">← Back</button>
+{% endblock %}
+
+{% block header_title %}Login{% endblock %}
+
+{% block content %}
+<div class="main-center">
+    <form id="login-form" method="post" action="/login/">
+        {% csrf_token %}
+        <!-- Preserve the role from previous page -->
+        <input type="hidden" id="role" name="role" value="{{ request.GET.role }}">
+        <div>
+            <label>Username</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div>
+            <label>Password</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit">Login</button>
+        {% if messages %}
+            {% for message in messages %}
+                <p style="color:red;">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    </form>
+
+    <p style="margin-top:1rem;">
+        Don't have an account? 
+        <a href="/signup/?role={{ request.GET.role }}">Sign up here</a>
+    </p>
+</div>
+{% endblock %}

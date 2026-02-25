@@ -1,0 +1,35 @@
+{% extends "companion/base.html" %}
+
+{% block title %}Signup{% endblock %}
+
+{% block header_buttons %}
+<button class="back-button" onclick="window.history.back()">← Back</button>
+{% endblock %}
+
+{% block header_title %}Signup{% endblock %}
+
+{% block content %}
+<div class="main-center">
+    <form id="signup-form" method="post" action="/signup/">
+        {% csrf_token %}
+        <!-- Keep track of the role from the previous page -->
+        <input type="hidden" id="role" name="role" value="{{ request.GET.role }}">
+        <div>
+            <label>Username</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div>
+            <label>Password</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit">Signup</button>
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+                <p style="color:red;">{{ message }}</p>
+            {% else %}
+                <p style="color:green;">{{ message }}</p>
+            {% endif %}
+        {% endfor %}
+    </form>
+</div>
+{% endblock %}
