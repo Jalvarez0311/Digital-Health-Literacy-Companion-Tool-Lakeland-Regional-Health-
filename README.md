@@ -16,7 +16,7 @@ How to deploy the Django server:
 
 ```
 git switch frontend-zaina-new
-cd .\Frontend\django\HealthFront\companion
+cd .\Frontend\django\HealthFront
 python -m venv venv
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 venv\Scripts\activate
