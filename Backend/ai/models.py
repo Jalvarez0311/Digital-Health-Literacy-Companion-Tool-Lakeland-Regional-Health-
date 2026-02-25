@@ -1,5 +1,4 @@
 """Pydantic Models for the AI"""
-from turtle import hideturtle
 from pydantic import BaseModel, Field
 from typing import List, Optional
 from datetime import date
@@ -24,11 +23,13 @@ class DischargeStatusInformation(BaseModel):
 
 
 class Diagnosis(BaseModel):
+    code: Optional[str] = None
     name: str
     category: str
 
 
 class Procedure(BaseModel):
+    code: Optional[str] = None
     name: str
     category: str
 
