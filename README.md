@@ -23,4 +23,5 @@ venv\Scripts\activate
 pip install Django
 python manage.py migrate
 python manage.py runserver
+
 ```
