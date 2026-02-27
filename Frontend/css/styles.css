@@ -71,3 +71,8 @@ button:hover,
     background-color: #1e4fd8;
     transform: translateY(-3px);
 }
+
+.role-card {
+    background-color: red !important;
+    color: white !important;
+}
