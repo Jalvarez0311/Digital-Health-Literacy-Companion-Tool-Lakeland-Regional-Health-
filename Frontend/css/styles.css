@@ -54,3 +54,20 @@ button:hover,
 .btn:hover {
     background-color: #1e4fd8;   /* darker on hover */
 }
+
+.role-card {
+    display: block;
+    background-color: #2563eb;  /* blue */
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    margin-top: 15px;
+    transition: all 0.2s ease;
+}
+
+.role-card:hover {
+    background-color: #1e4fd8;
+    transform: translateY(-3px);
+}
