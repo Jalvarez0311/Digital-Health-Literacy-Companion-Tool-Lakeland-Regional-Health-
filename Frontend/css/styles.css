@@ -72,7 +72,3 @@ button:hover,
     transform: translateY(-3px);
 }
 
-.role-card {
-    background-color: red !important;
-    color: white !important;
-}
