@@ -42,4 +42,15 @@ button,
     margin-top: 10px;
     font-size: 16px;
     cursor: pointer;
+
+    background-color: #2563eb;   /* default blue */
+    color: white;                /* text color */
+    border: none;
+    border-radius: 12px;
+    transition: background-color 0.2s ease;
+}
+
+button:hover,
+.btn:hover {
+    background-color: #1e4fd8;   /* darker on hover */
 }
