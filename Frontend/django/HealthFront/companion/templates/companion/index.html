@@ -7,8 +7,8 @@
 <div class="main-center">
     <div class="role-cards">
         <!-- Role cards as links with role query parameter -->
-        <a href="{% url 'login' %}?role=nurse" class="btn">🩺 Continue as Nurse</a>
-        <a href="{% url 'login' %}?role=patient" class="btn">👤 Continue as Patient</a>
+        <a href="{% url 'login' %}?role=nurse" class="role-card">🩺 Continue as Nurse</a>
+        <a href="{% url 'login' %}?role=patient" class="role-card">👤 Continue as Patient</a>
     </div>
 </div>
 {% endblock %}
