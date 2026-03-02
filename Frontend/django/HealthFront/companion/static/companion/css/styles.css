@@ -14,7 +14,7 @@ body {
 
 /* Header & Footer */
 header, footer {
-    background-color: #888;
+    background-color: #1e3a8a;
     color: white;
     text-align: center;
     padding: 1rem;
@@ -65,24 +65,24 @@ main, .main-center {
 .role-card {
     width: 200px;
     height: 150px;
-    border: 1px solid #333;
-    background-color: #ccc;
+    border: none;
+    background-color: #0d9488;   /* blue */
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     font-size: 1.2rem;
-    border-radius: 10px;
+    border-radius: 12px;
     box-shadow: 0 3px 6px rgba(0,0,0,0.2);
     transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
-    text-decoration: none; /* remove underline for <a> links */
-    color: black;          /* text color for links */
+    text-decoration: none;
+    color: white;                /* white text */
 }
 
 .role-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-    background-color: #bbb;
+    background-color: #0f766e;   /* darker blue */
 }
 
 /* Forms (Login / Signup) */
