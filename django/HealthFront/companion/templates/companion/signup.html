@@ -22,6 +22,12 @@
             <label>Password</label>
             <input type="password" id="password" name="password" required>
         </div>
+        {% if request.GET.role == "patient" %}
+        <div>
+            <label>Patient ID</label>
+            <input type="text" id="patient_id" name="patient_id" required>
+        </div>
+        {% endif %}
         <button type="submit">Signup</button>
         {% for message in messages %}
             {% if message.tags == 'error' %}

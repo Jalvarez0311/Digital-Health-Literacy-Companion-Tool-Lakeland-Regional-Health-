@@ -1,0 +1,27 @@
+{% extends "companion/base.html" %}
+
+{% block title %}My Discharge Documents{% endblock %}
+{% block header_title %}My Discharge Documents{% endblock %}
+
+{% block header_buttons %}
+<button class="back-button" onclick="window.location.href='{% url 'dashboard_patient' %}'">← Back</button>
+{% endblock %}
+
+{% block content %}
+<div class="main-center">
+    <h3>Patient ID: {{ patient_id }}</h3>
+
+    {% if documents %}
+        <div class="doc-list">
+            {% for doc in documents %}
+                <div class="doc-item">
+                    <p><strong>Generated:</strong> {{ doc.created_at }}</p>
+                    <div class="doc-body">{{ doc.document }}</div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No discharge documents have been generated for your record yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

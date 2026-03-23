@@ -9,6 +9,7 @@ from django.contrib import messages
 from ai.db_query import build_patient_context, fetch_patient_list
 from ai.llm import generate_discharge_document
 from ai.models import CurrentVisit
+from .models import DischargeDocument, PatientUserLink
 
 
 def home(request):
@@ -19,14 +20,28 @@ def signup_page(request):
         username = request.POST.get("username")
         password = request.POST.get("password")
         role = request.POST.get("role")
+        patient_id_raw = (request.POST.get("patient_id") or "").strip()
 
         if User.objects.filter(username=username).exists():
             messages.error(request, "Username already exists.")
             return redirect('signup')
 
+        if role == "patient":
+            if not patient_id_raw:
+                messages.error(request, "Patient ID is required for patient accounts.")
+                return redirect(f"/signup/?role={role}")
+            if not patient_id_raw.isdigit():
+                messages.error(request, "Patient ID must be a number.")
+                return redirect(f"/signup/?role={role}")
+            if PatientUserLink.objects.filter(patient_id=int(patient_id_raw)).exists():
+                messages.error(request, "That Patient ID is already linked to an account.")
+                return redirect(f"/signup/?role={role}")
+
         # Create user in database
         user = User.objects.create_user(username=username, password=password)
         user.save()
+        if role == "patient":
+            PatientUserLink.objects.create(user=user, patient_id=int(patient_id_raw))
         messages.success(request, "Account created! Please log in.")
         return redirect(f"/login/?role={role}")
 
@@ -41,8 +56,15 @@ def login_page(request):
 
         user = authenticate(request, username=username, password=password)
         if user is not None:
+            if role == "patient":
+                link = PatientUserLink.objects.filter(user=user).first()
+                if link is None:
+                    messages.error(request, "This account is not linked to a patient record.")
+                    return render(request, "companion/login.html")
             login(request, user)
             request.session['role'] = role  # persist role for the session
+            if role == "patient":
+                request.session['patient_id'] = link.patient_id
             if role == "nurse":
                 return redirect('dashboard_nurse')
             else:
@@ -106,6 +128,12 @@ def generate_discharge(request):
 
         context = build_patient_context(patient_id, current_visit)
         document = generate_discharge_document(context)
+        DischargeDocument.objects.create(
+            patient_id=patient_id,
+            patient_name=f"{context.patient.first_name} {context.patient.last_name}",
+            document=document,
+            created_by=request.user if request.user.is_authenticated else None,
+        )
 
         return JsonResponse({
             "patient_id": patient_id,
@@ -123,6 +151,24 @@ def survey(request):
 
 def patient_info(request):
     return render(request, "companion/patient_info.html")
+
+
+def patient_documents(request):
+    """Patient-only view of previously generated discharge documents."""
+    if request.session.get('role') != 'patient':
+        return redirect('home')
+
+    patient_id = request.session.get('patient_id')
+    if not patient_id:
+        messages.error(request, "No patient record linked to this account.")
+        return redirect('dashboard_patient')
+
+    documents = DischargeDocument.objects.filter(patient_id=patient_id)
+    return render(
+        request,
+        "companion/patient_documents.html",
+        {"documents": documents, "patient_id": patient_id},
+    )
 
 def logout_view(request):
     # Placeholder: for now, just redirect to home page
