@@ -141,3 +141,23 @@ form button:hover {
         padding: 0.8rem;
     }
 }
+
+.btn {
+    display: inline-flex;            /* Makes the button a flex container */
+    justify-content: center;         /* Center horizontally */
+    align-items: center;             /* Center vertically */
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    border: 1px solid #0076a8;      /* Secondary color border */
+    background-color: #e3f7fb;      /* Button color */
+    text-decoration: none;           /* Remove underline */
+    color: black;                    /* Text color */
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn:hover {
+    background-color: #79b243;       /* Hover color */
+    color: white;                    /* Optional: white text on hover */
+}
