@@ -4,6 +4,7 @@ html, body {
     padding: 0;
     height: 100%;
     font-family: Arial, sans-serif;
+    background-color: white; /* Updated background */
 }
 
 body {
@@ -14,7 +15,7 @@ body {
 
 /* Header & Footer */
 header, footer {
-    background-color: #1e3a8a;
+    background-color: #0076a8; /* Secondary color */
     color: white;
     text-align: center;
     padding: 1rem;
@@ -30,7 +31,7 @@ header, footer {
     font-size: 1rem;
     border-radius: 5px;
     border: 1px solid #333;
-    background-color: #eee;
+    background-color: #e3f7fb; /* Button color */
     cursor: pointer;
     z-index: 10;
     text-decoration: none;
@@ -41,7 +42,7 @@ header, footer {
 }
 
 .back-button:hover, .logout-button:hover {
-    background-color: #ddd;
+    background-color: #79b243; /* Button hover color */
 }
 
 /* Main Content */
@@ -65,24 +66,24 @@ main, .main-center {
 .role-card {
     width: 200px;
     height: 150px;
-    border: none;
-    background-color: #0d9488;   /* blue */
+    border: 1px solid #0076a8; /* Border using secondary color */
+    background-color: #e3f7fb; /* Card color */
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     font-size: 1.2rem;
-    border-radius: 12px;
+    border-radius: 10px;
     box-shadow: 0 3px 6px rgba(0,0,0,0.2);
     transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
     text-decoration: none;
-    color: white;                /* white text */
+    color: black;
 }
 
 .role-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-    background-color: #0f766e;   /* darker blue */
+    background-color: #79b243; /* Card hover color */
 }
 
 /* Forms (Login / Signup) */
@@ -107,7 +108,7 @@ label {
 input[type="text"], input[type="password"] {
     width: 100%;
     padding: 0.5rem;
-    border: 1px solid #333;
+    border: 1px solid #0076a8; /* Secondary color border */
     border-radius: 5px;
     box-sizing: border-box;
 }
@@ -116,14 +117,14 @@ input[type="text"], input[type="password"] {
 form button {
     padding: 0.5rem 1rem;
     border-radius: 5px;
-    border: 1px solid #333;
-    background-color: #eee;
+    border: 1px solid #0076a8; /* Secondary color border */
+    background-color: #e3f7fb; /* Button color */
     cursor: pointer;
     font-size: 1rem;
 }
 
 form button:hover {
-    background-color: #ddd;
+    background-color: #79b243; /* Button hover color */
 }
 
 /* Responsive */
