@@ -10,6 +10,7 @@ from ai.db_query import build_patient_context, fetch_patient_list
 from ai.llm import generate_discharge_document
 from ai.models import CurrentVisit
 from .models import DischargeDocument, PatientUserLink
+from .storage import upload_discharge_pdf_to_s3
 
 
 def home(request):
@@ -128,12 +129,21 @@ def generate_discharge(request):
 
         context = build_patient_context(patient_id, current_visit)
         document = generate_discharge_document(context)
-        DischargeDocument.objects.create(
+        saved_doc = DischargeDocument.objects.create(
             patient_id=patient_id,
             patient_name=f"{context.patient.first_name} {context.patient.last_name}",
             document=document,
             created_by=request.user if request.user.is_authenticated else None,
         )
+
+        object_key, object_url = upload_discharge_pdf_to_s3(
+            patient_id=patient_id,
+            document_id=saved_doc.id,
+            document_text=document,
+        )
+        saved_doc.s3_object_key = object_key
+        saved_doc.s3_object_url = object_url
+        saved_doc.save(update_fields=["s3_object_key", "s3_object_url"])
 
         return JsonResponse({
             "patient_id": patient_id,
@@ -164,10 +174,23 @@ def patient_documents(request):
         return redirect('dashboard_patient')
 
     documents = DischargeDocument.objects.filter(patient_id=patient_id)
+    selected_id_raw = request.GET.get("doc_id")
+    selected_document = None
+
+    if documents.exists():
+        if selected_id_raw and selected_id_raw.isdigit():
+            selected_document = documents.filter(id=int(selected_id_raw)).first()
+        if selected_document is None:
+            selected_document = documents.first()
+
     return render(
         request,
         "companion/patient_documents.html",
-        {"documents": documents, "patient_id": patient_id},
+        {
+            "documents": documents,
+            "patient_id": patient_id,
+            "selected_document": selected_document,
+        },
     )
 
 def logout_view(request):

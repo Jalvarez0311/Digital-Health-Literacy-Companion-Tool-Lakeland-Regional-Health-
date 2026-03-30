@@ -12,14 +12,37 @@
     <h3>Patient ID: {{ patient_id }}</h3>
 
     {% if documents %}
-        <div class="doc-list">
-            {% for doc in documents %}
+        <form method="get" style="max-width: 560px;">
+            <div>
+                <label for="doc_id">Select a discharge document</label>
+                <select id="doc_id" name="doc_id" onchange="this.form.submit()">
+                    {% for doc in documents %}
+                        <option value="{{ doc.id }}"
+                            {% if selected_document and doc.id == selected_document.id %}selected{% endif %}>
+                            Document #{{ doc.id }} - {{ doc.created_at }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+
+        {% if selected_document %}
+            <div class="doc-list">
                 <div class="doc-item">
-                    <p><strong>Generated:</strong> {{ doc.created_at }}</p>
-                    <div class="doc-body">{{ doc.document }}</div>
+                    <p><strong>Document ID:</strong> {{ selected_document.id }}</p>
+                    <p><strong>Generated:</strong> {{ selected_document.created_at }}</p>
+                    {% if selected_document.s3_object_url %}
+                        <p>
+                            <strong>Stored File:</strong>
+                            <a href="{{ selected_document.s3_object_url }}" target="_blank" rel="noopener">
+                                Open PDF
+                            </a>
+                        </p>
+                    {% endif %}
+                    <div class="doc-body">{{ selected_document.document }}</div>
                 </div>
-            {% endfor %}
-        </div>
+            </div>
+        {% endif %}
     {% else %}
         <p>No discharge documents have been generated for your record yet.</p>
     {% endif %}

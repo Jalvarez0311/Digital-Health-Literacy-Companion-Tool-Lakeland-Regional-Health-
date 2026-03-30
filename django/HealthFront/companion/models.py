@@ -14,6 +14,8 @@ class DischargeDocument(models.Model):
     patient_id = models.IntegerField(db_index=True)
     patient_name = models.CharField(max_length=255)
     document = models.TextField()
+    s3_object_key = models.CharField(max_length=512, blank=True, default="")
+    s3_object_url = models.URLField(blank=True, default="")
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
