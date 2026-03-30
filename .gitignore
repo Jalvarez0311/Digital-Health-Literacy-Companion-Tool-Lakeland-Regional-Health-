@@ -19,3 +19,5 @@ env/
 temp/
 ENV/
 
+# Annoying MacOS specific files
+.DS_Store
