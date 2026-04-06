@@ -1,0 +1,814 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+/* ── Variables ──────────────────────────────────────────── */
+:root {
+  --navy:        #113a63;
+  --navy-mid:    #15548b;
+  --sky:         #4a90c4;
+  --sky-light:   #e8f4fd;
+  --accent:      #2a7bbf;
+  --accent-hover:#175891;
+  --white:       #ffffff;
+  --off-white:   #f5f8fc;
+  --text-dark:   #0d1f30;
+  --text-mid:    #4a6078;
+  --text-light:  #8da5bc;
+  --border:      #c8dcea;
+  --success:     #2e8b57;
+  --error:       #c0392b;
+  --card-shadow: 0 4px 24px rgba(13, 46, 78, 0.10);
+  --radius:      12px;
+  --radius-sm:   8px;
+}
+
+/* ── Reset ──────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--off-white);
+  color: var(--text-dark);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* ── Typography ─────────────────────────────────────────── */
+h1, h2, h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+  line-height: 1.25;
+  color: var(--navy);
+}
+
+h1 { font-size: 2rem; font-weight: 600; }
+h2 { font-size: 1.5rem; font-weight: 400; }
+
+a { text-decoration: none; color: var(--accent); }
+a:hover { color: var(--accent-hover); }
+
+/* Login Page */
+.login-page {
+  display: flex;
+  min-height: 100vh;
+  background: var(--white);
+}
+
+.login-panel {
+  flex: 0 0 420px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem 3.5rem;
+  background: var(--white);
+  position: relative;
+  z-index: 2;
+}
+
+.login-panel .hospital-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 3rem;
+}
+
+.login-panel .brand-cross {
+  width: 32px;
+  height: 32px;
+  background: var(--navy);
+  border-radius: 6px;
+  position: relative;
+  flex-shrink: 0;
+}
+.login-panel .brand-cross::before,
+.login-panel .brand-cross::after {
+  content: '';
+  position: absolute;
+  background: white;
+  border-radius: 2px;
+}
+.login-panel .brand-cross::before {
+  width: 4px; height: 18px;
+  top: 7px; left: 14px;
+}
+.login-panel .brand-cross::after {
+  width: 18px; height: 4px;
+  top: 14px; left: 7px;
+}
+
+.login-panel .brand-name {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--navy);
+  line-height: 1.3;
+}
+
+.login-panel .welcome-heading {
+  font-size: 2.1rem;
+  color: var(--navy);
+  margin-bottom: 0.4rem;
+}
+
+.login-panel .welcome-sub {
+  color: var(--text-mid);
+  font-size: 0.95rem;
+  margin-bottom: 2.4rem;
+  font-weight: 300;
+}
+
+/* Form fields */
+.form-group {
+  margin-bottom: 1.2rem;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+  margin-bottom: 0.4rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  color: var(--text-dark);
+  background: var(--off-white);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+
+.form-group input:focus {
+  border-color: var(--sky);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(74,144,196,0.15);
+}
+
+.form-group input::placeholder {
+  color: var(--text-light);
+}
+
+.form-forgot {
+  text-align: right;
+  margin-top: -0.7rem;
+  margin-bottom: 1.4rem;
+}
+
+.form-forgot a {
+  font-size: 0.82rem;
+  color: var(--sky);
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 0.85rem;
+  background: var(--navy);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+  margin-top: 0.5rem;
+}
+
+.btn-primary:hover {
+  background: var(--navy-mid);
+  box-shadow: 0 6px 20px rgba(13,46,78,0.25);
+}
+
+.btn-primary:active { transform: scale(0.98); }
+
+.btn-secondary {
+  width: 100%;
+  padding: 0.85rem;
+  background: transparent;
+  color: var(--navy);
+  border: 1.5px solid var(--navy);
+  border-radius: 50px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  margin-top: 0.75rem;
+}
+
+.btn-secondary:hover {
+  background: var(--navy);
+  color: white;
+}
+
+.signup-link {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.88rem;
+  color: var(--text-mid);
+}
+
+.signup-link a { color: var(--accent); font-weight: 500; }
+
+/* Role badge on login panel */
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--sky-light);
+  color: var(--navy-mid);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+  margin-bottom: 1.2rem;
+}
+
+/* Error message */
+.form-error {
+  color: var(--error);
+  font-size: 0.85rem;
+  margin-top: 0.75rem;
+  text-align: center;
+  display: none;
+}
+
+/* Header / Main / Footer */
+
+header {
+  background: var(--navy);
+  color: white;
+  padding: 0 2rem;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 16px rgba(13,46,78,0.18);
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.header-cross {
+  width: 28px;
+  height: 28px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 6px;
+  position: relative;
+  flex-shrink: 0;
+}
+.header-cross::before, .header-cross::after {
+  content: '';
+  position: absolute;
+  background: white;
+  border-radius: 2px;
+}
+.header-cross::before { width: 3px; height: 15px; top: 6.5px; left: 12.5px; }
+.header-cross::after  { width: 15px; height: 3px; top: 12.5px; left: 6.5px; }
+
+header h1 {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  letter-spacing: 0.04em;
+}
+
+/* nav controls in header */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.back-button, .logout-button {
+  padding: 0.45rem 1.1rem;
+  border-radius: 20px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.84rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.18s;
+  letter-spacing: 0.03em;
+}
+
+.back-button {
+  background: rgba(255,255,255,0.12);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.25);
+}
+.back-button:hover {
+  background: rgba(255,255,255,0.22);
+}
+
+.logout-button {
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.85);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+.logout-button:hover {
+  background: rgba(192,57,43,0.7);
+  border-color: transparent;
+  color: white;
+}
+
+main {
+  min-height: calc(100vh - 64px - 52px);
+  padding: 3rem 2rem;
+}
+
+footer {
+  background: var(--navy);
+  color: rgba(255,255,255,0.5);
+  text-align: center;
+  padding: 0.9rem 2rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+}
+
+/* MAIN CENTER / CARD CONTAINER */
+
+.main-center {
+  max-width: 860px;
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;   
+  text-align: center;   
+}
+
+/* ── Page intro ──────────────────────────────────────────── */
+.page-intro {
+  margin-bottom: 2.5rem;
+}
+.page-intro h2 {
+  font-size: 1.75rem;
+  margin-bottom: 0.3rem;
+}
+.page-intro p {
+  color: var(--text-mid);
+  font-size: 0.95rem;
+}
+
+/* ── Role cards ──────────────────────────────────────────── */
+.role-cards {
+  display: flex;
+  justify-content: center;  
+  gap: 1.5rem;
+  flex-wrap: wrap;          
+  margin-top: 1.5rem;
+}
+
+.role-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 2.25rem 1.5rem;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--navy);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  font-size: 1rem;
+  text-align: center;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s, background 0.18s;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  width: 250px;
+}
+
+
+.role-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(13,46,78,0.14);
+  border-color: var(--sky);
+  background: var(--sky-light);
+  color: var(--navy);
+}
+
+/* Icon inside card */
+.role-card .card-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+
+.role-card .card-icon img {
+  width: 50px;
+  height: 50px;
+  filter: brightness(0) saturate(100%) invert(21%) sepia(36%) saturate(900%) hue-rotate(180deg);
+}
+
+/* ── Page content card ───────────────────────────────────── */
+.page-content {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: var(--card-shadow);
+  color: var(--text-mid);
+  margin-top: 1.5rem;
+}
+
+/* ── Inline form card ────────────────────────────────────── */
+.form-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2.25rem 2.5rem;
+  box-shadow: var(--card-shadow);
+  max-width: 480px;
+}
+
+.form-card .form-group input {
+  background: var(--off-white);
+}
+
+/* ── btn inline ──────────────────────────────────────────── */
+.btn {
+  display: inline-block;
+  padding: 0.7rem 1.5rem;
+  background: var(--navy);
+  color: white;
+  border-radius: 50px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn:hover { background: var(--navy-mid); color: white; }
+
+/* ── Success / error messages ────────────────────────────── */
+.success-msg {
+  color: var(--success);
+  font-size: 0.88rem;
+  margin-top: 0.75rem;
+  display: none;
+}
+
+/* ── Password strength ───────────────────────────────────── */
+#signupPasswordStrength {
+  font-size: 0.82rem;
+  margin-top: 0.3rem;
+  color: var(--text-mid);
+}
+
+/* ============================================================
+   SETTINGS BUTTON in header
+   ============================================================ */
+
+.settings-button {
+  padding: 0.45rem 1.1rem;
+  border-radius: 20px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.84rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.18s;
+  letter-spacing: 0.03em;
+  background: rgba(255,255,255,0.12);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.25);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.settings-button:hover {
+  background: rgba(255,255,255,0.22);
+  color: white;
+}
+
+/* SETTINGS PAGE */
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 1.5rem;
+
+  max-width: 800px;
+  margin: 0 auto; 
+}
+
+.settings-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--card-shadow);
+}
+
+.settings-card h3 {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+  margin-bottom: 1.1rem;
+}
+
+.settings-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.settings-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  background: var(--off-white);
+  user-select: none;
+}
+
+.settings-option:hover {
+  border-color: var(--sky);
+  background: var(--sky-light);
+}
+
+.settings-option.selected {
+  border-color: var(--accent);
+  background: var(--sky-light);
+  color: var(--navy);
+  font-weight: 500;
+}
+
+.settings-option input[type="radio"] {
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.settings-swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  flex-shrink: 0;
+}
+
+.settings-save-row {
+  display: flex;
+  flex-direction: column;   
+  align-items: center;     
+  justify-content: center;
+
+  margin-top: 2rem;
+  gap: 0.5rem;
+}
+
+.settings-saved-msg {
+  color: var(--success);
+  font-size: 0.88rem;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.settings-saved-msg.visible { opacity: 1; }
+
+/* ============================================================
+   DARK MODE  — .theme-dark on <html>
+   ============================================================ */
+
+html.theme-dark {
+  --navy:        #0a1929;
+  --navy-mid:    #0f2744;
+  --sky:         #5ba3d9;
+  --sky-light:   #0f2744;
+  --accent:      #5ba3d9;
+  --accent-hover:#82bce8;
+  --white:       #111d2e;
+  --off-white:   #0d1926;
+  --text-dark:   #e2eaf3;
+  --text-mid:    #8dafc8;
+  --text-light:  #4d6a82;
+  --border:      #1e3550;
+  --card-shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+
+html.theme-dark body           { background: var(--off-white); color: var(--text-dark); }
+html.theme-dark h1,
+html.theme-dark h2,
+html.theme-dark h3             { color: #c8dff0; }
+html.theme-dark .login-page    { background: var(--white); }
+html.theme-dark .login-panel   { background: var(--white); }
+html.theme-dark .form-group input { background: var(--off-white); color: var(--text-dark); border-color: var(--border); }
+
+/* ============================================================
+   HIGH CONTRAST — .theme-high-contrast on <html>
+   ============================================================ */
+
+html.theme-high-contrast {
+  --navy:        #000000;
+  --navy-mid:    #000000;
+  --sky:         #0057b8;
+  --sky-light:   #cce0ff;
+  --accent:      #0057b8;
+  --accent-hover:#003d82;
+  --white:       #ffffff;
+  --off-white:   #ffffff;
+  --text-dark:   #000000;
+  --text-mid:    #000000;
+  --text-light:  #333333;
+  --border:      #000000;
+  --card-shadow: none;
+}
+
+html.theme-high-contrast body  { background: #fff; color: #000; }
+html.theme-high-contrast a     { color: #0057b8; text-decoration: underline; }
+html.theme-high-contrast .role-card { border-width: 2.5px; }
+html.theme-high-contrast .btn-primary { outline: 2px solid #000; }
+html.theme-high-contrast header { background: #000; }
+html.theme-high-contrast footer { background: #000; }
+
+/* ============================================================
+   COLOUR-VISION SWATCHES (visual reference on settings page)
+   ============================================================ */
+.swatch-normal       { background: linear-gradient(135deg,#e74c3c,#2ecc71); }
+.swatch-deuteranopia { background: linear-gradient(135deg,#b8860b,#4682b4); }
+.swatch-protanopia   { background: linear-gradient(135deg,#8b6914,#4169e1); }
+.swatch-tritanopia   { background: linear-gradient(135deg,#e74c3c,#808080); }
+.swatch-monochromacy { background: linear-gradient(135deg,#666,#ccc); }
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .login-page { flex-direction: column; }
+  .login-panel { flex: none; padding: 2.5rem 2rem; }
+  .login-photo { min-height: 220px; }
+
+  header { padding: 0 1rem; }
+  main { padding: 2rem 1rem; }
+
+  .role-cards { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   Accessibility Settings Icon Colors
+   ============================================================ */
+
+/* ── General icon style ─────────────────────────────── */
+.card-icon {
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+    vertical-align: middle;
+    margin-right: 0.5rem;
+    transition: filter 0.2s ease;
+      filter: brightness(0) saturate(100%) invert(21%) sepia(36%) saturate(900%) hue-rotate(180deg);
+
+}
+
+
+.role-badge img {
+    filter: brightness(0) saturate(100%) invert(13%) sepia(50%) saturate(700%) hue-rotate(185deg) brightness(0.6) !important;
+    vertical-align: middle;
+}
+
+
+/* ============================================================
+   DARK MODE — COMPLETE (ENHANCED)
+   ============================================================ */
+
+html.theme-dark {
+  --navy:        #0a1929;  
+  --navy-mid:    #0f2744;
+  --sky:         #5ba3d9;
+  --sky-light:   #0f2744;
+  --accent:      #5ba3d9;
+  --accent-hover:#82bce8;
+  --white:       #111d2e;
+  --off-white:   #1a334f;  
+  --text-dark:   #e2eaf3;
+  --text-mid:    #8dafc8;
+  --text-light:  #4d6a82;
+  --border:      #1e3550;
+}
+
+/* ── Base elements ───────────────────────────────────────── */
+html.theme-dark body {
+  background: var(--off-white);
+  color: var(--text-dark);
+}
+
+html.theme-dark h1,
+html.theme-dark h2,
+html.theme-dark h3 {
+  color: #c8dff0;
+}
+
+html.theme-dark .login-page,
+html.theme-dark .login-panel {
+  background: var(--white);
+}
+
+/* ── Form inputs ─────────────────────────────────────────── */
+html.theme-dark .form-group input {
+  background: #0f1f33;
+  color: #eaf4ff;
+  border-color: #2a4666;
+}
+
+html.theme-dark .form-group input::placeholder {
+  color: #6f8aa3;
+}
+
+/* ============================================================
+   ICON FIXES
+   ============================================================ */
+
+html.theme-dark .card-icon,
+html.theme-dark .role-card .card-icon img {
+  filter: brightness(0) invert(85%) sepia(20%) saturate(300%) hue-rotate(180deg);
+}
+
+html.theme-dark .role-badge img {
+  filter: brightness(0) invert(90%) !important;
+}
+
+/* ============================================================
+   ROLE CARDS (TEXT + VISIBILITY FIX)
+   ============================================================ */
+
+html.theme-dark .role-card {
+  background: #111f30;
+  color: #e6f0fa;
+  border-color: #2a4666;
+}
+
+html.theme-dark .role-card:hover {
+  background: #1a3550;
+  color: #ffffff;
+  border-color: var(--sky);
+}
+
+/* ============================================================
+   ROLE BADGE (PORTAL BADGE FIX)
+   ============================================================ */
+
+html.theme-dark .role-badge {
+  background: #1a3550;
+  color: #cfe6ff;
+  border: 1px solid #2f5d85;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+/* ============================================================
+   SETTINGS PANEL FIXES
+   ============================================================ */
+
+html.theme-dark .settings-option {
+  background: #0f1f33;
+  color: var(--text-dark);
+  border-color: #2a4666;
+}
+
+html.theme-dark .settings-option:hover {
+  background: #17324d;
+  border-color: var(--sky);
+}
+
+html.theme-dark .settings-option.selected {
+  background: #1f3f5b;
+  border-color: var(--accent);
+  color: #ffffff;
+}
+
+html.theme-dark .settings-option input[type="radio"] {
+  accent-color: var(--accent-hover);
+}
