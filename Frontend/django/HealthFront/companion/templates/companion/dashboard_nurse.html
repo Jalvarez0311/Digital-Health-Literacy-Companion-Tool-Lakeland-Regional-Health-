@@ -1,18 +1,29 @@
 {% extends "companion/base.html" %}
+{% load static %}
 
 {% block title %}Nurse Dashboard{% endblock %}
 {% block header_title %}Nurse Dashboard{% endblock %}
 
 {% block header_buttons %}
-<!-- Logout button instead of back button -->
 <button class="logout-button" onclick="window.location.href='{% url 'logout' %}'">Logout</button>
 {% endblock %}
 
 {% block content %}
 <div class="main-center">
+    <div class="page-intro">
+        <h2>Nurse Dashboard</h2>
+        <p>Select an action below to get started.</p>
+    </div>
+
     <div class="role-cards">
-        <a href="{% url 'discharge_summary' %}" class="role-card">Create Discharge Summary</a>
-        <a href="{% url 'patient_info' %}" class="role-card">View Patient Info</a>
+        <a href="{% url 'discharge_summary' %}" class="role-card">
+            <span class="card-icon"><img src="{% static 'images/assignment_icon.svg' %}" alt="Assignment Icon"></span>
+            Create Discharge Summary
+        </a>
+        <a href="{% url 'patient_info' %}" class="role-card">
+            <span class="card-icon"><img src="{% static 'images/patient_info_icon.svg' %}" alt="Patient Icon"></span>
+            View Patient Info
+        </a>
     </div>
 </div>
 {% endblock %}

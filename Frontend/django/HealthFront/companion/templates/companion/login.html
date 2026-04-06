@@ -1,47 +1,69 @@
 {% extends "companion/base.html" %}
-
+{% load static %}
 {% block title %}Login{% endblock %}
+{% block header_title %}Lakeland Regional Health{% endblock %}
 
 {% block header_buttons %}
 <button class="back-button" onclick="window.history.back()">← Back</button>
 {% endblock %}
 
-{% block header_title %}Login{% endblock %}
-
 {% block content %}
 <div class="main-center">
-    <form id="login-form">
-        <!-- Preserve the role from previous page -->
-        <input type="hidden" id="role" value="{{ request.GET.role }}">
-        <div>
-            <label>Username</label>
-            <input type="text" id="username" required>
-        </div>
-        <div>
-            <label>Password</label>
-            <input type="password" id="password" required>
-        </div>
-        <button type="submit">Login</button>
-        <p id="error-msg" style="color:red; display:none;">Invalid login</p>
-    </form>
+    <div class="form-card">
+        {% if request.GET.role == 'nurse' %}
+    <div class="role-badge">
+        <img src="{% static 'images/nurse_icon.svg' %}" alt="Nurse" width="20" height="20">
+        Nurse Portal
+    </div>
+        {% else %}
+    <div class="role-badge">
+        <img src="{% static 'images/patient_icon.svg' %}" alt="Patient" width="20" height="20">
+        Patient Portal
+    </div>
+    {% endif %}
 
-    <p style="margin-top:1rem;">
-        Don't have an account? 
-        <a href="/signup/?role={{ request.GET.role }}">Sign up here</a>
-    </p>
+        <div class="page-intro" style="margin-bottom:1.75rem;">
+            <h2>Sign In</h2>
+            <p>Enter your credentials to access your portal.</p>
+        </div>
+
+        <form id="login-form">
+            <input type="hidden" id="role" value="{{ request.GET.role }}">
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter your username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn-primary">Sign In</button>
+
+            <p id="error-msg" class="form-error" style="display:none;">
+                Invalid username or password. Please try again.
+            </p>
+        </form>
+
+        <p class="signup-link" style="margin-top:1.25rem;">
+            Don't have an account?
+            <a href="/signup/?role={{ request.GET.role }}">Create one here</a>
+        </p>
+    </div>
 </div>
 
 <script>
 document.getElementById('login-form').addEventListener('submit', function(e) {
     e.preventDefault();
-    const role = document.getElementById('role').value;
+    const role     = document.getElementById('role').value;
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
-    // Test login logic
-    if(role === 'nurse' && username === 'admin' && password === 'test') {
+    if (role === 'nurse' && username === 'admin' && password === 'test') {
         window.location.href = "/dashboard/nurse/";
-    } else if(role === 'patient' && username === 'admin' && password === 'test') {
+    } else if (role === 'patient' && username === 'admin' && password === 'test') {
         window.location.href = "/dashboard/patient/";
     } else {
         document.getElementById('error-msg').style.display = 'block';

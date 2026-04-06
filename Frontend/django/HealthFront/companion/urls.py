@@ -11,4 +11,6 @@ urlpatterns = [
     path('discharge/', views.create_discharge, name='discharge_summary'),
     path('survey/', views.survey, name='survey'),
     path('patient-info/', views.patient_info, name='patient_info'),
+    path('', views.home, name='home'),
+    path('settings/', views.settings_view, name='settings')
 ]

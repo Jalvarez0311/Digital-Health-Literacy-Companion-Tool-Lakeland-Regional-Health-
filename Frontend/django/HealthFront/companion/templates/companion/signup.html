@@ -1,39 +1,58 @@
 {% extends "companion/base.html" %}
-
-{% block title %}Signup{% endblock %}
+{% load static %}
+{% block title %}Create Account{% endblock %}
+{% block header_title %}Lakeland Regional Health{% endblock %}
 
 {% block header_buttons %}
 <button class="back-button" onclick="window.history.back()">← Back</button>
 {% endblock %}
 
-{% block header_title %}Signup{% endblock %}
-
 {% block content %}
 <div class="main-center">
-    <form id="signup-form">
-        <!-- Keep track of the role from the previous page -->
-        <input type="hidden" id="role" value="{{ request.GET.role }}">
-        <div>
-            <label>Username</label>
-            <input type="text" id="username" required>
+    <div class="form-card">
+
+        {% if request.GET.role %}
+    <div class="role-badge">
+        {% if request.GET.role == 'nurse' %}
+            <img src="{% static 'images/nurse_icon.svg' %}" alt="Nurse" width="20" height="20">
+        {% else %}
+            <img src="{% static 'images/patient_icon.svg' %}" alt="Patient" width="20" height="20">
+        {% endif %}
+        {{ request.GET.role|capfirst }} Portal
+    </div>
+    {% endif %}
+
+        <div class="page-intro" style="margin-bottom:1.75rem;">
+            <h2>Create Account</h2>
+            <p>Register to access the Health Companion portal.</p>
         </div>
-        <div>
-            <label>Password</label>
-            <input type="password" id="password" required>
-        </div>
-        <button type="submit">Signup</button>
-        <p id="success-msg" style="color:green; display:none;">Account created! Redirecting to login...</p>
-    </form>
+
+        <form id="signup-form">
+            <input type="hidden" id="role" value="{{ request.GET.role }}">
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Choose a username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn-primary">Create Account</button>
+
+            <p id="success-msg" class="success-msg" style="display:none;">
+                ✓ Account created! Redirecting to login…
+            </p>
+        </form>
+    </div>
 </div>
 
 <script>
 document.getElementById('signup-form').addEventListener('submit', function(e) {
     e.preventDefault();
-
-    // Show success message
     document.getElementById('success-msg').style.display = 'block';
-
-    // Redirect after 1 second to the login page, preserving role
     setTimeout(() => {
         const role = document.getElementById('role').value;
         window.location.href = "/login/?role=" + encodeURIComponent(role);

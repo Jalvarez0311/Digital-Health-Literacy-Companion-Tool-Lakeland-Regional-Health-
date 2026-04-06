@@ -70,3 +70,6 @@ def patient_info(request):
 def logout_view(request):
     # Placeholder: for now, just redirect to home page
     return redirect('home')
+
+def settings_view(request):
+    return render(request, "companion/settings.html")

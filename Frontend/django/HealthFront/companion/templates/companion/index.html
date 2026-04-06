@@ -1,14 +1,30 @@
 {% extends "companion/base.html" %}
+{% load static %}
 
-{% block title %}Welcome!{% endblock %}
-{% block header_title %}Welcome!{% endblock %}
+{% block title %}Welcome{% endblock %}
+{% block header_title %}Lakeland Regional Health{% endblock %}
 
 {% block content %}
 <div class="main-center">
+    <div class="page-intro">
+        <h2 data-i18n="welcome.heading">Welcome!</h2>
+        <p data-i18n="welcome.sub">Please select your role to continue.</p>
+    </div>
+
     <div class="role-cards">
-        <!-- Role cards as links with role query parameter -->
-        <a href="{% url 'login' %}?role=nurse" class="role-card">Nurse</a>
-        <a href="{% url 'login' %}?role=patient" class="role-card">Patient</a>
+        <a href="{% url 'login' %}?role=nurse" class="role-card">
+            <span class="card-icon">
+                <img src="{% static 'images/nurse_icon.svg' %}" alt="Nurse Icon">
+            </span>
+            <span data-i18n="role.nurse">I am a Nurse</span>    
+        </a>
+
+        <a href="{% url 'login' %}?role=patient" class="role-card">
+            <span class="card-icon">
+                <img src="{% static 'images/patient_icon.svg' %}" alt="Patient Icon">
+            </span>
+            <span data-i18n="role.patient">I am a Patient</span>
+        </a>
     </div>
 </div>
 {% endblock %}

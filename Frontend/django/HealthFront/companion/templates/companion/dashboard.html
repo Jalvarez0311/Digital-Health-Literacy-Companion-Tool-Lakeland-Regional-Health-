@@ -1,15 +1,28 @@
 {% extends "companion/base.html" %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Nurse Dashboard{% endblock %}
+{% block header_title %}Nurse Dashboard{% endblock %}
+
+{% block header_buttons %}
+<button class="logout-button" onclick="window.location.href='{% url 'logout' %}'">Logout</button>
+{% endblock %}
 
 {% block content %}
-<h2>Dashboard</h2>
+<div class="main-center">
+    <div class="page-intro">
+        <h2 data-i18n="dash.nurse.heading">Nurse Dashboard</h2>
+        <p data-i18n="dash.nurse.sub">Select an action below to get started.</p>
+    </div>
 
-<a href="{% url 'create_discharge' %}" class="btn">
-    Create Discharge Summary
-</a>
-
-<a href="{% url 'survey' %}" class="btn">
-    Complete Survey
-</a>
+    <div class="role-cards">
+        <a href="{% url 'discharge_summary' %}" class="role-card">
+            <span class="card-icon"><img src="{% static 'images/assignment_icon.svg' %}" alt="Assignment Icon"></span>
+            <span data-i18n="card.discharge">Create Discharge Summary</span>
+        </a>
+        <a href="{% url 'patient_info' %}" class="role-card">
+            <span class="card-icon"><img src="{% static 'images/patient_icon.svg' %}" alt="Patient Icon"></span>
+            <span data-i18n="card.patientinfo">View Patient Info</span>
+        </a>
+    </div>
+</div>
 {% endblock %}
