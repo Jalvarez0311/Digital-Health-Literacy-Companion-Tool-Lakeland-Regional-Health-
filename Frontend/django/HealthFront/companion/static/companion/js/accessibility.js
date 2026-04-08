@@ -109,7 +109,7 @@ const A11Y = (() => {
       'theme.dark':          'Modo oscuro',
       'theme.high-contrast': 'Alto contraste',
       'tts.off':             'Desactivado',
-      'tts.on':              'Activado — lee la página en voz alta',
+      'tts.on':              'Activado — Lee la página cuando carga',
       'footer.copy':         '© 2026 Lakeland Regional Health · Todos los derechos reservados',
     }
   };
