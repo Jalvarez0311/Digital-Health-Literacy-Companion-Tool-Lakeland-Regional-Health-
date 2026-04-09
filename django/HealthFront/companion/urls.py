@@ -11,6 +11,11 @@ urlpatterns = [
     path('discharge/', views.create_discharge, name='discharge_summary'),
     path('discharge/generate/', views.generate_discharge, name='generate_discharge'),
     path('patient-documents/', views.patient_documents, name='patient_documents'),
+    path(
+        'patient-documents/<int:doc_id>/pdf/',
+        views.patient_discharge_pdf,
+        name='patient_discharge_pdf',
+    ),
     path('survey/', views.survey, name='survey'),
     path('patient-info/', views.patient_info, name='patient_info'),
 ]

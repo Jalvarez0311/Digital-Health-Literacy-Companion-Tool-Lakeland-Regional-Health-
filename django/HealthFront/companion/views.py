@@ -1,20 +1,40 @@
 import json
-from django.shortcuts import render, redirect
-from django.http import JsonResponse
-from django.views.decorators.http import require_POST
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
-from django.contrib import messages
 
 from ai.db_query import build_patient_context, fetch_patient_list
 from ai.llm import generate_discharge_document
 from ai.models import CurrentVisit
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.http import Http404, HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.clickjacking import xframe_options_sameorigin
+from django.views.decorators.http import require_POST
+
 from .models import DischargeDocument, PatientUserLink
-from .storage import upload_discharge_pdf_to_s3
+from .storage import (
+    discharge_pdf_bytes,
+    get_presigned_s3_url,
+    upload_discharge_pdf_to_s3,
+)
+
+
+def _authorized_patient_id(request):
+    """
+    Return the PatientID this login is allowed to access documents for.
+    Uses PatientUserLink (authoritative), not session['patient_id'], which can be tampered with.
+    """
+    if not request.user.is_authenticated:
+        return None
+    if request.session.get("role") != "patient":
+        return None
+    link = PatientUserLink.objects.filter(user=request.user).first()
+    return link.patient_id if link else None
 
 
 def home(request):
     return render(request, "companion/index.html")
+
 
 def signup_page(request):
     if request.method == "POST":
@@ -25,7 +45,7 @@ def signup_page(request):
 
         if User.objects.filter(username=username).exists():
             messages.error(request, "Username already exists.")
-            return redirect('signup')
+            return redirect("signup")
 
         if role == "patient":
             if not patient_id_raw:
@@ -35,7 +55,9 @@ def signup_page(request):
                 messages.error(request, "Patient ID must be a number.")
                 return redirect(f"/signup/?role={role}")
             if PatientUserLink.objects.filter(patient_id=int(patient_id_raw)).exists():
-                messages.error(request, "That Patient ID is already linked to an account.")
+                messages.error(
+                    request, "That Patient ID is already linked to an account."
+                )
                 return redirect(f"/signup/?role={role}")
 
         # Create user in database
@@ -60,37 +82,41 @@ def login_page(request):
             if role == "patient":
                 link = PatientUserLink.objects.filter(user=user).first()
                 if link is None:
-                    messages.error(request, "This account is not linked to a patient record.")
+                    messages.error(
+                        request, "This account is not linked to a patient record."
+                    )
                     return render(request, "companion/login.html")
             login(request, user)
-            request.session['role'] = role  # persist role for the session
+            request.session["role"] = role  # persist role for the session
             if role == "patient":
-                request.session['patient_id'] = link.patient_id
+                request.session["patient_id"] = link.patient_id
             if role == "nurse":
-                return redirect('dashboard_nurse')
+                return redirect("dashboard_nurse")
             else:
-                return redirect('dashboard_patient')
+                return redirect("dashboard_patient")
         else:
             messages.error(request, "Invalid login credentials.")
 
     return render(request, "companion/login.html")
-    
+
 
 def logout_user(request):
     logout(request)
-    return redirect('home')
+    return redirect("home")
 
 
 def dashboard_nurse(request):
     return render(request, "companion/dashboard_nurse.html")
 
+
 def dashboard_patient(request):
     return render(request, "companion/dashboard_patient.html")
 
+
 def create_discharge(request):
     """Nurses only — renders the discharge form with the patient dropdown."""
-    if request.session.get('role') != 'nurse':
-        return redirect('home')
+    if request.session.get("role") != "nurse":
+        return redirect("home")
     try:
         patients = fetch_patient_list()
     except Exception:
@@ -107,7 +133,7 @@ def generate_discharge(request):
     Queries the patient's full medical history from Supabase, sends it to the
     LLM, and returns the generated discharge document as JSON.
     """
-    if request.session.get('role') != 'nurse':
+    if request.session.get("role") != "nurse":
         return JsonResponse({"error": "Access denied."}, status=403)
 
     try:
@@ -145,19 +171,23 @@ def generate_discharge(request):
         saved_doc.s3_object_url = object_url
         saved_doc.save(update_fields=["s3_object_key", "s3_object_url"])
 
-        return JsonResponse({
-            "patient_id": patient_id,
-            "patient_name": f"{context.patient.first_name} {context.patient.last_name}",
-            "document": document,
-        })
+        return JsonResponse(
+            {
+                "patient_id": patient_id,
+                "patient_name": f"{context.patient.first_name} {context.patient.last_name}",
+                "document": document,
+            }
+        )
 
     except ValueError as exc:
         return JsonResponse({"error": str(exc)}, status=404)
     except Exception as exc:
         return JsonResponse({"error": f"Unexpected error: {exc}"}, status=500)
 
+
 def survey(request):
     return render(request, "companion/survey.html")
+
 
 def patient_info(request):
     return render(request, "companion/patient_info.html")
@@ -165,13 +195,12 @@ def patient_info(request):
 
 def patient_documents(request):
     """Patient-only view of previously generated discharge documents."""
-    if request.session.get('role') != 'patient':
-        return redirect('home')
+    patient_id = _authorized_patient_id(request)
+    if patient_id is None:
+        return redirect("home")
 
-    patient_id = request.session.get('patient_id')
-    if not patient_id:
-        messages.error(request, "No patient record linked to this account.")
-        return redirect('dashboard_patient')
+    if request.session.get("patient_id") != patient_id:
+        request.session["patient_id"] = patient_id
 
     documents = DischargeDocument.objects.filter(patient_id=patient_id)
     selected_id_raw = request.GET.get("doc_id")
@@ -183,6 +212,15 @@ def patient_documents(request):
         if selected_document is None:
             selected_document = documents.first()
 
+    selected_pdf_url = None
+    if selected_document and selected_document.s3_object_key:
+        try:
+            selected_pdf_url = get_presigned_s3_url(
+                object_key=selected_document.s3_object_key
+            )
+        except Exception:
+            selected_pdf_url = None
+
     return render(
         request,
         "companion/patient_documents.html",
@@ -190,9 +228,45 @@ def patient_documents(request):
             "documents": documents,
             "patient_id": patient_id,
             "selected_document": selected_document,
+            "selected_pdf_url": selected_pdf_url,
         },
     )
 
+
+@xframe_options_sameorigin
+def patient_discharge_pdf(request, doc_id):
+    """
+    Stream PDF only if DischargeDocument.pk belongs to this user's linked PatientID.
+    """
+    patient_id = _authorized_patient_id(request)
+    if patient_id is None:
+        raise Http404()
+    doc = get_object_or_404(
+        DischargeDocument,
+        pk=doc_id,
+        patient_id=patient_id,
+    )
+    pdf_bytes = discharge_pdf_bytes(
+        s3_object_key=doc.s3_object_key or None,
+        document_text=doc.document or "",
+    )
+    return HttpResponse(
+        pdf_bytes,
+        content_type="application/pdf",
+        headers={"Content-Disposition": f'inline; filename="discharge-{doc.id}.pdf"'},
+    )
+
+
 def logout_view(request):
     # Placeholder: for now, just redirect to home page
-    return redirect('home')
+    return redirect("home")
+
+
+def discharge_view(request):
+    doc = DischargeDocument.objects.get(id=4)
+
+    return render(
+        request,
+        "companion/patient_documents.html",
+        {"pdf_url": get_presigned_s3_url(object_key=doc.s3_object_key)},
+    )

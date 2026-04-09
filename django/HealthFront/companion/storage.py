@@ -1,102 +1,171 @@
 import os
+from pathlib import Path
 
 import boto3
+from botocore.config import Config
+from dotenv import load_dotenv
+from tomllib import load
+
+load_dotenv(Path(__file__).resolve().parents[3] / ".env")
 
 
 def _build_simple_pdf(text: str) -> bytes:
     """
-    Build a small, plain-text PDF without external PDF libraries.
-    Supports basic multi-page text rendering.
+    Build a styled PDF from LLM-generated markdown discharge text using reportlab.
+
+    Recognised markdown constructs:
+      - ``---`` on its own line  → horizontal rule + heading-detection trigger
+      - ``**bold**``             → inline bold via XML markup
+      - ``- item``               → bullet list item
+      - ``1. item``              → numbered list item
+      - first non-empty, non-list line after ``---`` → section / title heading
+      - blank line               → small vertical spacer
+      - everything else          → body paragraph
     """
+    import io
+    import re
+    from html import escape as _he
 
-    def _escape_pdf_text(value: str) -> str:
-        return value.replace("\\", "\\\\").replace("(", "\\(").replace(")", "\\)")
+    from reportlab.lib.colors import HexColor
+    from reportlab.lib.enums import TA_LEFT
+    from reportlab.lib.pagesizes import letter
+    from reportlab.lib.styles import ParagraphStyle
+    from reportlab.lib.units import inch
+    from reportlab.platypus import HRFlowable, Paragraph, SimpleDocTemplate, Spacer
 
-    lines = (text or "").splitlines() or [""]
-    lines_per_page = 44
-    pages = [lines[i:i + lines_per_page] for i in range(0, len(lines), lines_per_page)]
-
-    objects = []
-
-    # 1: catalog, 2: pages container
-    objects.append("<< /Type /Catalog /Pages 2 0 R >>")
-
-    kids = []
-    page_obj_numbers = []
-    content_obj_numbers = []
-
-    next_obj = 3
-    for _ in pages:
-        page_obj_numbers.append(next_obj)
-        next_obj += 1
-        content_obj_numbers.append(next_obj)
-        next_obj += 1
-
-    for page_no, page_lines in enumerate(pages):
-        page_obj = page_obj_numbers[page_no]
-        content_obj = content_obj_numbers[page_no]
-        kids.append(f"{page_obj} 0 R")
-
-        content_lines = [
-            "BT",
-            "/F1 11 Tf",
-            "50 780 Td",
-            "14 TL",
-        ]
-
-        first = True
-        for raw in page_lines:
-            safe = _escape_pdf_text(raw)
-            if first:
-                content_lines.append(f"({safe}) Tj")
-                first = False
-            else:
-                content_lines.append(f"T* ({safe}) Tj")
-        content_lines.append("ET")
-
-        content = "\n".join(content_lines).encode("utf-8")
-        page_dict = (
-            "<< /Type /Page /Parent 2 0 R "
-            "/MediaBox [0 0 612 792] "
-            f"/Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >> "
-            f"/Contents {content_obj} 0 R >>"
+    # ------------------------------------------------------------------
+    # Inline-bold helper: split on **…**, HTML-escape plain parts, wrap
+    # bold parts in <b>…</b> so reportlab's XML parser handles them.
+    # ------------------------------------------------------------------
+    def _inline(s: str) -> str:
+        parts = re.split(r"\*\*(.+?)\*\*", s)
+        return "".join(
+            _he(p) if i % 2 == 0 else f"<b>{_he(p)}</b>" for i, p in enumerate(parts)
         )
 
-        objects.append(page_dict)
-        objects.append(f"<< /Length {len(content)} >>\nstream\n{content.decode('utf-8')}\nendstream")
-
-    pages_dict = f"<< /Type /Pages /Count {len(pages)} /Kids [{' '.join(kids)}] >>"
-    objects.insert(1, pages_dict)
-
-    # Build final PDF with xref
-    pdf_parts = [b"%PDF-1.4\n"]
-    offsets = [0]
-
-    for idx, obj in enumerate(objects, start=1):
-        offsets.append(sum(len(p) for p in pdf_parts))
-        pdf_parts.append(f"{idx} 0 obj\n{obj}\nendobj\n".encode("utf-8"))
-
-    xref_start = sum(len(p) for p in pdf_parts)
-    xref_lines = [f"xref\n0 {len(objects) + 1}\n", "0000000000 65535 f \n"]
-    for off in offsets[1:]:
-        xref_lines.append(f"{off:010d} 00000 n \n")
-
-    trailer = (
-        f"trailer\n<< /Size {len(objects) + 1} /Root 1 0 R >>\n"
-        f"startxref\n{xref_start}\n%%EOF\n"
+    # ------------------------------------------------------------------
+    # Paragraph styles
+    # ------------------------------------------------------------------
+    style_title = ParagraphStyle(
+        "DischargeTitle",
+        fontName="Helvetica-Bold",
+        fontSize=20,
+        textColor=HexColor("#003F7F"),
+        spaceAfter=4,
+        alignment=TA_LEFT,
+    )
+    style_section = ParagraphStyle(
+        "DischargeSection",
+        fontName="Helvetica-Bold",
+        fontSize=12,
+        textColor=HexColor("#005A9C"),
+        spaceBefore=4,
+        spaceAfter=4,
+        alignment=TA_LEFT,
+    )
+    style_body = ParagraphStyle(
+        "DischargeBody",
+        fontName="Helvetica",
+        fontSize=10,
+        leading=15,
+        spaceAfter=3,
+        alignment=TA_LEFT,
+    )
+    style_list = ParagraphStyle(
+        "DischargeList",
+        fontName="Helvetica",
+        fontSize=10,
+        leading=15,
+        leftIndent=16,
+        spaceAfter=2,
+        alignment=TA_LEFT,
     )
 
-    pdf_parts.append("".join(xref_lines).encode("utf-8"))
-    pdf_parts.append(trailer.encode("utf-8"))
-    return b"".join(pdf_parts)
+    # ------------------------------------------------------------------
+    # Document setup – letter page, 1-inch margins on all sides
+    # ------------------------------------------------------------------
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=letter,
+        leftMargin=inch,
+        rightMargin=inch,
+        topMargin=inch,
+        bottomMargin=inch,
+    )
+
+    # ------------------------------------------------------------------
+    # Parse lines into reportlab flowables
+    # ------------------------------------------------------------------
+    story = []
+    lines = (text or "").splitlines()
+
+    # expect_heading: True after a --- divider; preserved across blank lines
+    # and list items; consumed on the first non-empty, non-list line.
+    expect_heading: bool = False
+    is_first_heading: bool = True  # first heading → Title style; rest → Section
+
+    _bullet_re = re.compile(r"^- (.+)$")
+    _numbered_re = re.compile(r"^(\d+)\. (.+)$")
+
+    for line in lines:
+        stripped = line.rstrip()
+
+        # ---- horizontal rule / section divider ----
+        if stripped == "---":
+            story.append(Spacer(1, 4))
+            story.append(
+                HRFlowable(width="100%", thickness=0.75, color=HexColor("#CCCCCC"))
+            )
+            story.append(Spacer(1, 4))
+            expect_heading = True
+            continue
+
+        # ---- blank line ----
+        if stripped == "":
+            story.append(Spacer(1, 5))
+            # expect_heading is intentionally preserved here
+            continue
+
+        # ---- bullet list item: "- text" ----
+        bullet_m = _bullet_re.match(stripped)
+        if bullet_m:
+            content = bullet_m.group(1)
+            story.append(Paragraph(f"\u2022 {_inline(content)}", style_list))
+            # expect_heading is intentionally preserved here
+            continue
+
+        # ---- numbered list item: "N. text" ----
+        numbered_m = _numbered_re.match(stripped)
+        if numbered_m:
+            num = numbered_m.group(1)
+            content = numbered_m.group(2)
+            story.append(Paragraph(f"{num}. {_inline(content)}", style_list))
+            # expect_heading is intentionally preserved here
+            continue
+
+        # ---- heading or body paragraph ----
+        if expect_heading:
+            if is_first_heading:
+                story.append(Paragraph(_inline(stripped), style_title))
+                is_first_heading = False
+            else:
+                story.append(Paragraph(_inline(stripped), style_section))
+            expect_heading = False
+        else:
+            story.append(Paragraph(_inline(stripped), style_body))
+
+    doc.build(story)
+    return buffer.getvalue()
 
 
-def upload_discharge_pdf_to_s3(*, patient_id: int, document_id: int, document_text: str) -> tuple[str, str]:
+def upload_discharge_pdf_to_s3(
+    *, patient_id: int, document_id: int, document_text: str
+) -> tuple[str, str]:
     """
     Upload a generated discharge document as PDF to S3-compatible storage.
     Returns (object_key, object_url).
     """
-    
 
     endpoint_url = os.getenv("S3_ENDPOINT_URL")
     bucket_name = os.getenv("S3_BUCKET_NAME")
@@ -119,6 +188,7 @@ def upload_discharge_pdf_to_s3(*, patient_id: int, document_id: int, document_te
         aws_access_key_id=access_key,
         aws_secret_access_key=secret_key,
         region_name=region,
+        config=Config(signature_version="s3v4"),
     )
     s3.put_object(
         Bucket=bucket_name,
@@ -130,3 +200,51 @@ def upload_discharge_pdf_to_s3(*, patient_id: int, document_id: int, document_te
     base = endpoint_url.rstrip("/")
     object_url = f"{base}/{bucket_name}/{object_key}"
     return object_key, object_url
+
+
+def _s3_client():
+    endpoint_url = os.getenv("S3_ENDPOINT_URL")
+    bucket_name = os.getenv("S3_BUCKET_NAME")
+    access_key = os.getenv("S3_ACCESS_KEY_ID")
+    secret_key = os.getenv("S3_SECRET_ACCESS_KEY")
+    region = os.getenv("S3_REGION", "us-east-1")
+    if not all([endpoint_url, bucket_name, access_key, secret_key]):
+        raise ValueError(
+            "Missing S3 env vars. Required: "
+            "S3_ENDPOINT_URL, S3_BUCKET_NAME, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY."
+        )
+    return boto3.client(
+        "s3",
+        endpoint_url=endpoint_url,
+        aws_access_key_id=access_key,
+        aws_secret_access_key=secret_key,
+        region_name=region,
+        config=Config(signature_version="s3v4"),
+    ), bucket_name
+
+
+def fetch_discharge_pdf_from_s3(*, object_key: str) -> bytes:
+    s3, bucket_name = _s3_client()
+    response = s3.get_object(Bucket=bucket_name, Key=object_key)
+    return response["Body"].read()
+
+
+def discharge_pdf_bytes(*, s3_object_key: str | None, document_text: str) -> bytes:
+    if s3_object_key:
+        try:
+            return fetch_discharge_pdf_from_s3(object_key=s3_object_key)
+        except Exception:
+            pass
+    return _build_simple_pdf(document_text)
+
+
+def get_presigned_s3_url(*, object_key: str, expires_in_seconds: int = 900) -> str:
+    """
+    Create a time-limited URL for embedding/downloading a private PDF from S3.
+    """
+    s3, bucket_name = _s3_client()
+    return s3.generate_presigned_url(
+        ClientMethod="get_object",
+        Params={"Bucket": bucket_name, "Key": object_key},
+        ExpiresIn=expires_in_seconds,
+    )
