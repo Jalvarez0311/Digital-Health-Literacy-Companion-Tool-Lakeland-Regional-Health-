@@ -1,0 +1,59 @@
+{% extends "companion/base.html" %}
+
+{% block title %}My Discharge Documents{% endblock %}
+{% block header_title %}My Discharge Documents{% endblock %}
+
+{% block header_buttons %}
+<button class="back-button" onclick="window.location.href='{% url 'dashboard_patient' %}'">← Back</button>
+{% endblock %}
+
+{% block content %}
+<div class="main-center">
+
+    {% if documents %}
+        <form method="get" style="max-width: 560px;">
+            <div>
+                <label for="doc_id">Select a discharge document</label>
+                <select id="doc_id" name="doc_id" onchange="this.form.submit()">
+                    {% for doc in documents %}
+                        <option value="{{ doc.id }}" {% if selected_document and doc.id == selected_document.id %}selected{% endif %}>
+                            Document #{{ doc.id }} - {{ doc.created_at }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+
+        {% if selected_document %}
+            <div class="doc-list">
+                <div class="doc-item">
+                    <p><strong>Document ID:</strong> {{ selected_document.id }}</p>
+                    <p><strong>Generated:</strong> {{ selected_document.created_at }}</p>
+                    <p>
+                        <strong>View as PDF:</strong>
+                        {% if selected_pdf_url %}
+                        <a href="{{ selected_pdf_url }}" target="_blank" rel="noopener">
+                            Open PDF in new tab
+                        </a>
+                        {% else %}
+                        <a href="{% url 'patient_discharge_pdf' selected_document.id %}" target="_blank" rel="noopener">
+                            Open PDF in new tab
+                        </a>
+                        {% endif %}
+                    </p>
+
+                    <div style="margin-top: 0.9rem;">
+                        <iframe
+                            src="{% url 'patient_discharge_pdf' selected_document.id %}"
+                            width="100%"
+                            height="800px">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% else %}
+        <p>No discharge documents have been generated for your record yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,119 @@
+{% extends "companion/base.html" %}
+
+{% block title %}Discharge Summary{% endblock %}
+{% block header_title %}Create Discharge Summary{% endblock %}
+
+{% block header_buttons %}
+<button class="back-button" onclick="window.history.back()">← Back</button>
+{% endblock %}
+
+{% block content %}
+<div class="main-center">
+
+    <!-- context filled by nurse, then POSTs to generate endpoint -->
+    <form id="discharge-form" method="post" action="/discharge/generate/">
+        {% csrf_token %}
+
+        <div>
+            <label for="patient_id">Patient</label>
+            <select id="patient_id" name="patient_id" required>
+                <option value="">-- Select a patient --</option>
+                {% for p in patients %}
+                    <option value="{{ p.id }}">{{ p.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="visit_date">Visit Date</label>
+            <input type="date" id="visit_date" name="visit_date" required
+                   value="{% now 'Y-m-d' %}">
+        </div>
+
+        <div>
+            <label for="reason_for_visit">Reason for Visit</label>
+            <input type="text" id="reason_for_visit" name="reason_for_visit"
+                   placeholder="e.g. chest pain, shortness of breath" required>
+        </div>
+
+        <div>
+            <label for="current_diagnoses">Current Diagnoses
+                <small>(comma-separated)</small>
+            </label>
+            <input type="text" id="current_diagnoses" name="current_diagnoses"
+                   placeholder="e.g. Hypertension, Type 2 Diabetes">
+        </div>
+
+        <div>
+            <label for="current_medications">Current Medications
+                <small>(comma-separated)</small>
+            </label>
+            <input type="text" id="current_medications" name="current_medications"
+                   placeholder="e.g. Metformin 500mg, Lisinopril 10mg">
+        </div>
+
+        <div>
+            <label for="notes">Additional Notes</label>
+            <textarea id="notes" name="notes" rows="3"
+                      placeholder="Allergies, nurse observations, follow-up instructions..."></textarea>
+        </div>
+
+        <button type="submit" id="submit-btn">Generate Discharge Document</button>
+    </form>
+
+    <!-- Result area — shown after the AI responds -->
+    <div id="result-area" style="display:none;">
+        <h2 id="result-heading"></h2>
+        <div id="result-doc">
+        </div>
+    </div>
+
+    <p id="error-msg" style="display:none;"></p>
+
+</div>
+
+<script>
+document.getElementById('discharge-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Generating…';
+
+    const formData = new FormData(this);
+
+    fetch('/discharge/generate/', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(res => res.json())
+    .then(data => {
+        btn.disabled = false;
+        btn.textContent = 'Generate Discharge Document';
+
+        if (data.error) {
+            document.getElementById('error-msg').textContent = data.error;
+            document.getElementById('error-msg').style.display = 'block';
+            return;
+        }
+
+        document.getElementById('error-msg').style.display = 'none';
+        document.getElementById('result-heading').textContent =
+            'Discharge Document — ' + data.patient_name;
+        document.getElementById('result-doc').innerHTML = marked.parse(data.document);
+        document.getElementById('result-area').style.display = 'block';
+        document.getElementById('result-area').scrollIntoView({ behavior: 'smooth' });
+    })
+    .catch(() => {
+        btn.disabled = false;
+        btn.textContent = 'Generate Discharge Document';
+        document.getElementById('error-msg').textContent = 'Network error. Please try again.';
+        document.getElementById('error-msg').style.display = 'block';
+    });
+});
+</script>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+{% endblock %}

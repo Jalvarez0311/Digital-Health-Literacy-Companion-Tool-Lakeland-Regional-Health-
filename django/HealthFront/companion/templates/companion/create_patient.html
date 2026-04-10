@@ -1,0 +1,59 @@
+{% extends "companion/base.html" %}
+
+{% block title %}Create Patient{% endblock %}
+{% block header_title %}Create Patient Record{% endblock %}
+
+{% block header_buttons %}
+<button class="back-button" onclick="window.history.back()">← Back</button>
+{% endblock %}
+
+{% block content %}
+<div class="main-center">
+    <form method="post">
+        {% csrf_token %}
+
+        <div>
+            <label for="first_name">First Name *</label>
+            <input type="text" id="first_name" name="first_name" required>
+        </div>
+
+        <div>
+            <label for="middle_name">Middle Name</label>
+            <input type="text" id="middle_name" name="middle_name">
+        </div>
+
+        <div>
+            <label for="last_name">Last Name *</label>
+            <input type="text" id="last_name" name="last_name" required>
+        </div>
+
+        <div>
+            <label for="gender">Gender</label>
+            <select id="gender" name="gender">
+                <option value="">-- Select --</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="unknown">Prefer not to say / Other</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="birth_date">Birth Date</label>
+            <input type="date" id="birth_date" name="birth_date">
+        </div>
+
+        <div>
+            <label for="ethnicity">Ethnicity</label>
+            <input type="text" id="ethnicity" name="ethnicity">
+        </div>
+
+        <div>
+            <label for="race">Race</label>
+            <input type="text" id="race" name="race">
+        </div>
+
+        <button type="submit">Create Patient</button>
+    </form>
+</div>
+{% endblock %}
+

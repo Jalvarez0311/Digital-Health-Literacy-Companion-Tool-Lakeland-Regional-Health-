@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Health Companion{% endblock %} — Lakeland Regional Health</title>
+    <link rel="stylesheet" href="{% static 'companion/css/styles.css' %}">
+    <!-- Accessibility: apply saved prefs before paint to avoid flash -->
+    <script src="{% static 'companion/js/accessibility.js' %}"></script>
+</head>
+<body>
+
+<header>
+    <div class="header-brand">
+        <img src="{% static 'images/heart_icon.svg' %}" alt="Heart Icon">
+        <h1>{% block header_title %}Health Companion{% endblock %}</h1>
+    </div>
+    <div class="header-actions">
+        {% block header_buttons %}{% endblock %}
+        <a href="{% url 'settings' %}" class="settings-button" data-i18n="nav.settings">⚙ Accessibility</a>
+    </div>
+</header>
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<footer>
+    <p data-i18n="footer.copy">© 2026 Lakeland Regional Health &nbsp;·&nbsp; All rights reserved</p>
+</footer>
+
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

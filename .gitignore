@@ -16,5 +16,8 @@ __pycache__/
 # Virtual environment
 venv/
 env/
+temp/
 ENV/
 
+# Annoying MacOS specific files
+.DS_Store
