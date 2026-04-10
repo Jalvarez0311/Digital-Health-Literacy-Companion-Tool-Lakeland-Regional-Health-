@@ -8,13 +8,61 @@
 {% endblock %}
 
 {% block content %}
-<div class="main-center">
-    <div class="page-intro">
+<div class="main-center" style="width: 100%; max-width: 900px; align-items: stretch; text-align: left;">
+    <div class="page-intro" style="text-align: center;">
         <h2>Patient Information</h2>
-        <p>Review the patient's details below.</p>
+        <p>Review your basic account and portal details below.</p>
     </div>
-    <div class="page-content">
-        Here's where patient info would be.
+
+    <div class="info-grid">
+        <div class="info-card">
+            <h3>Account Information</h3>
+            <div class="info-row">
+                <span class="info-label">Username</span>
+                <span class="info-value">{{ username|default:"Not available" }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Portal Role</span>
+                <span class="info-value">{{ role|default:"Patient"|title }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Authentication Status</span>
+                <span class="info-value">{% if request.user.is_authenticated %}Logged In{% else %}Not Logged In{% endif %}</span>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <h3>Linked Patient Record</h3>
+            <div class="info-row">
+                <span class="info-label">Patient ID</span>
+                <span class="info-value">{{ patient_id|default:"Not available" }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">First Name</span>
+                <span class="info-value">{{ first_name|default:"Not provided" }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Last Name</span>
+                <span class="info-value">{{ last_name|default:"Not provided" }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Email</span>
+                <span class="info-value">{{ email|default:"Not provided" }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-content" style="max-width: 900px; text-align: left;">
+        <h3 style="margin-bottom: 0.75rem;">Portal Summary</h3>
+        <p style="margin-bottom: 1rem; color: var(--text-mid);">
+            This page shows basic information about your portal account and how it is connected to your patient access.
+        </p>
+        <ul style="margin-left: 1.2rem; color: var(--text-dark); line-height: 1.8;">
+            <li>You can review your discharge documents from the patient dashboard.</li>
+            <li>Your portal role determines which pages and documents you can access.</li>
+            <li>Your linked patient ID is used to securely match your account with your records.</li>
+            <li>If any of this information looks incorrect, please contact your care team for assistance.</li>
+        </ul>
     </div>
 </div>
 {% endblock %}

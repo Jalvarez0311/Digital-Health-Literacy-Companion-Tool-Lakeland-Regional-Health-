@@ -1,38 +1,47 @@
 {% extends "companion/base.html" %}
 
 {% block title %}Login{% endblock %}
+{% block header_title %}Login{% endblock %}
 
 {% block header_buttons %}
 <button class="back-button" onclick="window.history.back()">← Back</button>
 {% endblock %}
 
-{% block header_title %}Login{% endblock %}
-
 {% block content %}
 <div class="main-center">
-    <form id="login-form" method="post" action="/login/">
+    <div class="page-intro">
+        <h2 data-i18n="login.heading">Sign In</h2>
+        <p data-i18n="login.sub">Enter your credentials to access your portal.</p>
+    </div>
+
+    <form id="login-form" method="post" action="/login/" class="form-card" style="width: 100%; max-width: 480px; text-align: left;">
         {% csrf_token %}
-        <!-- Preserve the role from previous page -->
         <input type="hidden" id="role" name="role" value="{{ request.GET.role }}">
-        <div>
-            <label>Username</label>
-            <input type="text" id="username" name="username" required>
+
+        <div class="form-group">
+            <label for="username" data-i18n="login.username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Enter your username" required>
         </div>
-        <div>
-            <label>Password</label>
-            <input type="password" id="password" name="password" required>
+
+        <div class="form-group">
+            <label for="password" data-i18n="login.password">Password</label>
+            <input type="password" id="password" name="password" placeholder="••••••••" required>
         </div>
-        <button type="submit">Login</button>
+
+        <button type="submit" class="btn-primary" data-i18n="login.submit">Sign In</button>
+
         {% if messages %}
+        <div class="form-error" style="display: block; margin-top: 1rem; text-align: center;">
             {% for message in messages %}
-                <p style="color:red;">{{ message }}</p>
+            <p>{{ message }}</p>
             {% endfor %}
+        </div>
         {% endif %}
     </form>
 
-    <p class="inline-note">
-        Don't have an account? 
-        <a href="/signup/?role={{ request.GET.role }}">Sign up here</a>
+    <p class="signup-link">
+        <span data-i18n="login.noaccount">Don't have an account?</span>
+        <a href="/signup/?role={{ request.GET.role }}" data-i18n="login.signup">Create one here</a>
     </p>
 </div>
 {% endblock %}

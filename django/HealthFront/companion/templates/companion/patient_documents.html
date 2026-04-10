@@ -8,11 +8,10 @@
 {% endblock %}
 
 {% block content %}
-<div class="main-center">
-
+<div class="main-center" style="width: 100%; max-width: 1200px; align-items: stretch; text-align: left;">
     {% if documents %}
-        <form method="get" style="max-width: 560px;">
-            <div>
+        <form method="get" style="width: 100%; max-width: 560px; margin: 0 auto 1.5rem;">
+            <div class="form-group" style="margin-bottom: 0;">
                 <label for="doc_id">Select a discharge document</label>
                 <select id="doc_id" name="doc_id" onchange="this.form.submit()">
                     {% for doc in documents %}
@@ -25,35 +24,43 @@
         </form>
 
         {% if selected_document %}
-            <div class="doc-list">
-                <div class="doc-item">
-                    <p><strong>Document ID:</strong> {{ selected_document.id }}</p>
-                    <p><strong>Generated:</strong> {{ selected_document.created_at }}</p>
-                    <p>
-                        <strong>View as PDF:</strong>
-                        {% if selected_pdf_url %}
-                        <a href="{{ selected_pdf_url }}" target="_blank" rel="noopener">
-                            Open PDF in new tab
-                        </a>
-                        {% else %}
-                        <a href="{% url 'patient_discharge_pdf' selected_document.id %}" target="_blank" rel="noopener">
-                            Open PDF in new tab
-                        </a>
-                        {% endif %}
-                    </p>
+            <div class="page-content" style="width: 100%; max-width: 1200px; text-align: left;">
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; align-items: flex-start;">
+                    <div>
+                        <p><strong>Document ID:</strong> {{ selected_document.id }}</p>
+                        <p><strong>Generated:</strong> {{ selected_document.created_at }}</p>
+                    </div>
+                    <div>
+                        <p style="margin-bottom: 0;">
+                            <strong>View as PDF:</strong>
+                            {% if selected_pdf_url %}
+                            <a href="{{ selected_pdf_url }}" target="_blank" rel="noopener">
+                                Open PDF in new tab
+                            </a>
+                            {% else %}
+                            <a href="{% url 'patient_discharge_pdf' selected_document.id %}" target="_blank" rel="noopener">
+                                Open PDF in new tab
+                            </a>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
 
-                    <div style="margin-top: 0.9rem;">
+                <div class="doc-list" style="width: 100%; margin-top: 1rem;">
+                    <div class="doc-item" style="width: 100%; margin-top: 0; padding: 0; border: none; box-shadow: none; background: transparent;">
                         <iframe
                             src="{% url 'patient_discharge_pdf' selected_document.id %}"
-                            width="100%"
-                            height="800px">
+                            style="display: block; width: 100%; min-width: 100%; height: 900px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--white);"
+                            title="Discharge document PDF">
                         </iframe>
                     </div>
                 </div>
             </div>
         {% endif %}
     {% else %}
-        <p>No discharge documents have been generated for your record yet.</p>
+        <div class="page-content" style="width: 100%; text-align: center;">
+            <p>No discharge documents have been generated for your record yet.</p>
+        </div>
     {% endif %}
 </div>
 {% endblock %}

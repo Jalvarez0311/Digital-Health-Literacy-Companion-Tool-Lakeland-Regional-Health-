@@ -10,15 +10,12 @@
 
 {% block content %}
 <div class="main-center">
-
     <div class="page-intro">
         <h2 data-i18n="settings.title">Accessibility Settings</h2>
         <p>Your preferences will be applied to every page.</p>
     </div>
 
     <div class="settings-grid">
-
-        <!-- ── Language ───────────────────────────────────── -->
         <div class="settings-card">
             <h3 data-i18n="settings.lang">Language</h3>
             <div class="settings-options" id="lang-options">
@@ -31,7 +28,6 @@
             </div>
         </div>
 
-        <!-- ── Color Vision ───────────────────────────────── -->
         <div class="settings-card">
             <h3 data-i18n="settings.vision">Color Vision Mode</h3>
             <div class="settings-options" id="vision-options">
@@ -63,14 +59,13 @@
             </div>
         </div>
 
-        <!-- ── Display Theme ──────────────────────────────── -->
         <div class="settings-card">
             <h3 data-i18n="settings.theme">Display Theme</h3>
             <div class="settings-options" id="theme-options">
                 <label class="settings-option" data-value="default">
                     <input type="radio" name="theme" value="default">
                     <img src="{% static 'images/sun_icon.svg' %}" class="card-icon" alt="Default Theme">
-                     Default
+                    Default
                 </label>
                 <label class="settings-option" data-value="dark">
                     <input type="radio" name="theme" value="dark">
@@ -80,7 +75,6 @@
             </div>
         </div>
 
-        <!-- ── Text-to-Speech ─────────────────────────────── -->
         <div class="settings-card">
             <h3 data-i18n="settings.tts">Text-to-Speech</h3>
             <div class="settings-options" id="tts-options">
@@ -96,31 +90,29 @@
                 </label>
             </div>
         </div>
-
-    </div><!-- /.settings-grid -->
-
-    <div class="settings-save-row">
-        <button class="btn-primary" id="saveBtn" style="width:auto; padding:0.75rem 2.5rem;"
-                data-i18n="settings.save">Save Settings</button>
-        <span class="settings-saved-msg" id="savedMsg" data-i18n="settings.saved">✓ Settings saved!</span>
     </div>
 
+    <div class="settings-save-row">
+        <button class="btn-primary" id="saveBtn" style="width:auto; padding:0.75rem 2.5rem;" data-i18n="settings.save">Save Settings</button>
+        <span class="settings-saved-msg" id="savedMsg" data-i18n="settings.saved">✓ Settings saved!</span>
+    </div>
 </div>
+{% endblock %}
 
+{% block extra_scripts %}
 <script>
 (function () {
     const KEYS = A11Y.KEYS;
 
-    // Reflect stored values into radio buttons & highlight options
     function loadSelections() {
         const stored = {
-            lang:   localStorage.getItem(KEYS.lang)   || 'en',
+            lang: localStorage.getItem(KEYS.lang) || 'en',
             vision: localStorage.getItem(KEYS.vision) || 'normal',
-            theme:  localStorage.getItem(KEYS.theme)  || 'default',
-            tts:    localStorage.getItem(KEYS.tts)    || 'off',
+            theme: localStorage.getItem(KEYS.theme) || 'default',
+            tts: localStorage.getItem(KEYS.tts) || 'off',
         };
 
-        ['lang','vision','theme','tts'].forEach(group => {
+        ['lang', 'vision', 'theme', 'tts'].forEach(group => {
             const opts = document.querySelectorAll(`#${group}-options .settings-option`);
             opts.forEach(opt => {
                 const val = opt.getAttribute('data-value');
@@ -132,7 +124,6 @@
         });
     }
 
-    // Highlight option on click
     document.querySelectorAll('.settings-options').forEach(group => {
         group.addEventListener('change', () => {
             group.querySelectorAll('.settings-option').forEach(opt => {
@@ -141,22 +132,27 @@
         });
     });
 
-    // Save button
     document.getElementById('saveBtn').addEventListener('click', () => {
-        const get = name => {
+        const get = (name) => {
             const el = document.querySelector(`input[name="${name}"]:checked`);
             return el ? el.value : null;
         };
 
-        if (get('lang'))   localStorage.setItem(KEYS.lang,   get('lang'));
-        if (get('vision')) localStorage.setItem(KEYS.vision, get('vision'));
-        if (get('theme'))  localStorage.setItem(KEYS.theme,  get('theme'));
-        if (get('tts'))    localStorage.setItem(KEYS.tts,    get('tts'));
+        const previousTheme = localStorage.getItem(KEYS.theme) || 'default';
 
-        // Apply immediately without reload
+        if (get('lang')) localStorage.setItem(KEYS.lang, get('lang'));
+        if (get('vision')) localStorage.setItem(KEYS.vision, get('vision'));
+        if (get('theme')) localStorage.setItem(KEYS.theme, get('theme'));
+        if (get('tts')) localStorage.setItem(KEYS.tts, get('tts'));
+
+        const nextTheme = localStorage.getItem(KEYS.theme) || 'default';
+
         A11Y.applyAll();
 
-        // Show saved message
+        if (previousTheme !== nextTheme && A11Y.refreshStylesheet) {
+            A11Y.refreshStylesheet();
+        }
+
         const msg = document.getElementById('savedMsg');
         msg.classList.add('visible');
         setTimeout(() => msg.classList.remove('visible'), 2500);

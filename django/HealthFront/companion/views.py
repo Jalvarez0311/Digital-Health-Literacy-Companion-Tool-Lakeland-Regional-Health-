@@ -190,7 +190,23 @@ def survey(request):
 
 
 def patient_info(request):
-    return render(request, "companion/patient_info.html")
+    patient_id = _authorized_patient_id(request)
+    return render(
+        request,
+        "companion/patient_info.html",
+        {
+            "patient_id": patient_id,
+            "username": request.user.username if request.user.is_authenticated else "",
+            "first_name": request.user.first_name
+            if request.user.is_authenticated
+            else "",
+            "last_name": request.user.last_name
+            if request.user.is_authenticated
+            else "",
+            "email": request.user.email if request.user.is_authenticated else "",
+            "role": request.session.get("role", ""),
+        },
+    )
 
 
 def patient_documents(request):

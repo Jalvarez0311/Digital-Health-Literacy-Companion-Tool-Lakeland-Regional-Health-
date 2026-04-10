@@ -49,17 +49,19 @@ def _build_simple_pdf(text: str) -> bytes:
     style_title = ParagraphStyle(
         "DischargeTitle",
         fontName="Helvetica-Bold",
-        fontSize=20,
-        textColor=HexColor("#003F7F"),
-        spaceAfter=4,
+        fontSize=15,
+        textColor=HexColor("#000000"),
+        leading=19,
+        spaceAfter=6,
         alignment=TA_LEFT,
     )
     style_section = ParagraphStyle(
         "DischargeSection",
         fontName="Helvetica-Bold",
-        fontSize=12,
-        textColor=HexColor("#005A9C"),
-        spaceBefore=4,
+        fontSize=11,
+        textColor=HexColor("#000000"),
+        leading=14,
+        spaceBefore=6,
         spaceAfter=4,
         alignment=TA_LEFT,
     )
@@ -67,17 +69,19 @@ def _build_simple_pdf(text: str) -> bytes:
         "DischargeBody",
         fontName="Helvetica",
         fontSize=10,
-        leading=15,
-        spaceAfter=3,
+        textColor=HexColor("#000000"),
+        leading=14,
+        spaceAfter=4,
         alignment=TA_LEFT,
     )
     style_list = ParagraphStyle(
         "DischargeList",
         fontName="Helvetica",
         fontSize=10,
-        leading=15,
+        textColor=HexColor("#000000"),
+        leading=14,
         leftIndent=16,
-        spaceAfter=2,
+        spaceAfter=3,
         alignment=TA_LEFT,
     )
 

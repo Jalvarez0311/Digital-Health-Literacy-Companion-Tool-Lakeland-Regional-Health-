@@ -1,41 +1,55 @@
 {% extends "companion/base.html" %}
 
 {% block title %}Signup{% endblock %}
+{% block header_title %}Signup{% endblock %}
 
 {% block header_buttons %}
 <button class="back-button" onclick="window.history.back()">← Back</button>
 {% endblock %}
 
-{% block header_title %}Signup{% endblock %}
-
 {% block content %}
 <div class="main-center">
-    <form id="signup-form" method="post" action="/signup/">
-        {% csrf_token %}
-        <!-- Keep track of the role from the previous page -->
-        <input type="hidden" id="role" name="role" value="{{ request.GET.role }}">
-        <div>
-            <label>Username</label>
-            <input type="text" id="username" name="username" required>
-        </div>
-        <div>
-            <label>Password</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-        {% if request.GET.role == "patient" %}
-        <div>
-            <label>Patient ID</label>
-            <input type="text" id="patient_id" name="patient_id" required>
-        </div>
-        {% endif %}
-        <button type="submit">Signup</button>
-        {% for message in messages %}
-            {% if message.tags == 'error' %}
-                <p style="color:red;">{{ message }}</p>
-            {% else %}
-                <p style="color:green;">{{ message }}</p>
+    <div class="page-intro">
+        <h2>Create Account</h2>
+        <p>Register to access the Health Companion portal.</p>
+    </div>
+
+    <div class="form-card" style="width: 100%; max-width: 480px; text-align: left;">
+        <form id="signup-form" method="post" action="/signup/">
+            {% csrf_token %}
+            <input type="hidden" id="role" name="role" value="{{ request.GET.role }}">
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Choose a username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Create a password" required>
+            </div>
+
+            {% if request.GET.role == "patient" %}
+            <div class="form-group">
+                <label for="patient_id">Patient ID</label>
+                <input type="text" id="patient_id" name="patient_id" placeholder="Enter your Patient ID" required>
+            </div>
             {% endif %}
-        {% endfor %}
-    </form>
+
+            <button type="submit" class="btn-primary">Create Account</button>
+
+            {% if messages %}
+            <div style="margin-top: 1rem; text-align: center;">
+                {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                    <p style="color: var(--error); font-size: 0.9rem;">{{ message }}</p>
+                    {% else %}
+                    <p style="color: var(--success); font-size: 0.9rem;">{{ message }}</p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
+        </form>
+    </div>
 </div>
 {% endblock %}
