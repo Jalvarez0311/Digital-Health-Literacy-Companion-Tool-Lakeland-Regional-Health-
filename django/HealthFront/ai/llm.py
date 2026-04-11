@@ -4,6 +4,7 @@ import os
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from langchain_anthropic import ChatAnthropic # pip install -U langchain-anthropic
+from langchain_openai import ChatOpenAI
 from langchain.messages import HumanMessage, AIMessage, SystemMessage
 from .models import PatientDischargeContext
 
@@ -13,8 +14,12 @@ load_dotenv()
 # llm = ChatAnthropic(
 #     model="claude-haiku-4-5-20251001",
 # )
-llm = ChatGroq(
-    model="moonshotai/kimi-k2-instruct-0905",
+# llm = ChatGroq(
+#     model="moonshotai/kimi-k2-instruct-0905",
+# )
+llm = ChatOpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    model="openai/gpt-oss-120b:free"
 )
 
 
