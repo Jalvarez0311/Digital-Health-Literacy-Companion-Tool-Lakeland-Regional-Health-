@@ -99,10 +99,29 @@ def _build_simple_pdf(text: str) -> bytes:
     )
 
     # ------------------------------------------------------------------
+    # Normalise Unicode typographic characters that Helvetica / WinAnsiEncoding
+    # cannot render (they appear as black boxes in the PDF viewer).
+    # ------------------------------------------------------------------
+    def _normalize(s: str) -> str:
+        return (
+            s.replace("\u2014", "-")   # em dash
+             .replace("\u2013", "-")   # en dash
+             .replace("\u2012", "-")   # figure dash
+             .replace("\u2010", "-")   # hyphen
+             .replace("\u2011", "-")   # non-breaking hyphen
+             .replace("\u2018", "'")   # left single quotation mark
+             .replace("\u2019", "'")   # right single quotation mark
+             .replace("\u201c", '"')   # left double quotation mark
+             .replace("\u201d", '"')   # right double quotation mark
+             .replace("\u2026", "...")  # ellipsis
+             .replace("\u00a0", " ")   # non-breaking space
+        )
+
+    # ------------------------------------------------------------------
     # Parse lines into reportlab flowables
     # ------------------------------------------------------------------
     story = []
-    lines = (text or "").splitlines()
+    lines = _normalize(text or "").splitlines()
 
     # expect_heading: True after a --- divider; preserved across blank lines
     # and list items; consumed on the first non-empty, non-list line.

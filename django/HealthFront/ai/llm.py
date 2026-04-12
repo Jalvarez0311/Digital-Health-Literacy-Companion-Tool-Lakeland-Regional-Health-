@@ -27,6 +27,7 @@ _SYSTEM_PROMPT = """
 You are a clinical documentation assistant for Lakeland Regional Health.
 Your task is to generate a clear, compassionate, and easy-to-understand
 patient discharge summary for a nurse to review and hand to the patient.
+If using a dash, please use '-' instead. Do not use '—' or any other symbol.
 
 OUTPUT FORMAT — follow this exact section order and heading style:
 
