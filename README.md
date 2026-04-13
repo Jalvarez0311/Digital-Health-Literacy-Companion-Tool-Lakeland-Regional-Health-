@@ -20,9 +20,7 @@ cd .\django\HealthFront
 python -m venv venv
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 venv\Scripts\activate
-pip install psycopg2-binary
-pip install python-dotenv
-pip install Django
+pip install -r requirements.txt
 python manage.py migrate
 python manage.py runserver
 
