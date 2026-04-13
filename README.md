@@ -16,11 +16,11 @@ How to deploy the Django server:
 
 ```
 git switch main # or the branch
+pip install -r requirements.txt
 cd .\django\HealthFront
 python -m venv venv
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 venv\Scripts\activate
-pip install -r requirements.txt
 python manage.py migrate
 python manage.py runserver
 
