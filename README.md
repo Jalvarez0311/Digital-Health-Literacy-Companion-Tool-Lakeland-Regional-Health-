@@ -4,7 +4,7 @@ This project aims to develop a digital health literacy companion that replaces g
 
 How to deploy the Django server:
 1. Clone the repository
-2. Git pull if needed
+2. Git pull if needed (and git switch main)
 3. Go to the HealthFront directory in Powershell
 4. Create the virtual environment
 5. Bypass restrictions
@@ -15,7 +15,6 @@ How to deploy the Django server:
 10. Go to the address that's listed
 
 ```
-git switch main # or the branch
 python -m venv venv
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 .\venv\Scripts\Activate.ps1
