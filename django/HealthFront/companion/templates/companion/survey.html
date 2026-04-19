@@ -1,20 +1,144 @@
-{% extends "companion/base.html" %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hospital Experience Survey</title>
 
-{% block title %}Survey{% endblock %}
-{% block header_title %}Patient Survey{% endblock %}
+  <link rel="stylesheet" href="{% static 'companion/css/styles.css' %}">
 
-{% block header_buttons %}
-<button class="back-button" onclick="window.history.back()">← Back</button>
-{% endblock %}
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+    }
 
-{% block content %}
-<div class="main-center">
-    <div class="page-intro">
-        <h2>Patient Survey</h2>
-        <p>Your feedback helps us improve.</p>
-    </div>
-    <div class="page-content">
-        Here's where a survey would be.
-    </div>
-</div>
-{% endblock %}
+    .container {
+      max-width: 600px;
+      margin: auto;
+    }
+
+    h2 {
+      margin-bottom: 5px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label.title {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+    }
+
+    .option-group {
+      margin-top: 5px;
+    }
+
+    .option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 4px 0;
+    }
+
+    .option input {
+      width: auto;
+      margin: 0;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 15px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h2>Hospital Experience Survey</h2>
+    <p>Please share your experience to help us improve care.</p>
+
+    <form action="#" method="post">
+
+      <!-- Name -->
+      <div class="form-group">
+        <label class="title">Full Name</label>
+        <input type="text" name="name" required>
+      </div>
+
+      <!-- Contact -->
+      <div class="form-group">
+        <label class="title">Contact Information</label>
+        <input type="text" name="contact" required>
+      </div>
+
+      <!-- Doctor Rating -->
+      <div class="form-group">
+        <label class="title">How would you rate your doctor?</label>
+        <div class="option-group">
+          <label class="option"><input type="radio" name="doctor" value="excellent"> Excellent</label>
+          <label class="option"><input type="radio" name="doctor" value="good"> Good</label>
+          <label class="option"><input type="radio" name="doctor" value="fair"> Fair</label>
+          <label class="option"><input type="radio" name="doctor" value="poor"> Poor</label>
+        </div>
+      </div>
+
+      <!-- Staff Communication -->
+      <div class="form-group">
+        <label class="title">Was the hospital staff clear and helpful?</label>
+        <div class="option-group">
+          <label class="option"><input type="radio" name="staff" value="yes"> Yes</label>
+          <label class="option"><input type="radio" name="staff" value="somewhat"> Somewhat</label>
+          <label class="option"><input type="radio" name="staff" value="no"> No</label>
+        </div>
+      </div>
+
+      <!-- Services Used -->
+      <div class="form-group">
+        <label class="title">What services did you use?</label>
+        <div class="option-group">
+          <label class="option"><input type="checkbox" name="services" value="consultation"> Doctor consultation</label>
+          <label class="option"><input type="checkbox" name="services" value="nursing"> Nursing care</label>
+          <label class="option"><input type="checkbox" name="services" value="lab"> Lab tests</label>
+          <label class="option"><input type="checkbox" name="services" value="pharmacy"> Pharmacy</label>
+        </div>
+      </div>
+
+      <!-- Overall Experience -->
+      <div class="form-group">
+        <label class="title">Overall, how was your experience?</label>
+        <div class="option-group">
+          <label class="option"><input type="radio" name="overall" value="very_good"> Very Good</label>
+          <label class="option"><input type="radio" name="overall" value="good"> Good</label>
+          <label class="option"><input type="radio" name="overall" value="okay"> Okay</label>
+          <label class="option"><input type="radio" name="overall" value="bad"> Bad</label>
+        </div>
+      </div>
+
+      <!-- Comments -->
+      <div class="form-group">
+        <label class="title">Additional Feedback</label>
+        <textarea name="comments" rows="3"></textarea>
+      </div>
+
+      <!-- Submit -->
+      <button type="submit">Submit</button>
+
+    </form>
+
+  </div>
+
+</body>
+</html>
