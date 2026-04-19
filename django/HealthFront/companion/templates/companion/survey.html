@@ -1,20 +1,122 @@
 {% extends "companion/base.html" %}
+{% load static %}
 
-{% block title %}Survey{% endblock %}
-{% block header_title %}Patient Survey{% endblock %}
+{% block title %}Hospital Experience Survey{% endblock %}
+{% block header_title %}Hospital Experience Survey{% endblock %}
 
 {% block header_buttons %}
-<button class="back-button" onclick="window.history.back()">← Back</button>
+<a href="{% url 'dashboard_patient' %}" class="back-button">← Back</a>
+<a href="{% url 'logout' %}" class="logout-button">Logout</a>
 {% endblock %}
 
 {% block content %}
-<div class="main-center">
-    <div class="page-intro">
-        <h2>Patient Survey</h2>
-        <p>Your feedback helps us improve.</p>
-    </div>
-    <div class="page-content">
-        Here's where a survey would be.
-    </div>
+<style>
+    .survey-form-wrap {
+        max-width: 600px;
+        margin: 0 auto;
+        width: 100%;
+        text-align: left;
+    }
+    .survey-form-wrap h2 {
+        margin-bottom: 5px;
+    }
+    .survey-form-wrap .form-group {
+        margin-bottom: 20px;
+    }
+    .survey-form-wrap .form-group label.title {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 8px;
+    }
+    .survey-form-wrap input,
+    .survey-form-wrap select,
+    .survey-form-wrap textarea {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        box-sizing: border-box;
+    }
+    .survey-form-wrap .option-group {
+        margin-top: 5px;
+    }
+    .survey-form-wrap .option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 4px 0;
+    }
+    .survey-form-wrap .option input {
+        width: auto;
+        margin: 0;
+    }
+    .survey-form-wrap button[type="submit"] {
+        margin-top: 20px;
+        padding: 10px 15px;
+        cursor: pointer;
+    }
+</style>
+<div class="main-center survey-form-wrap">
+    <h2>Hospital Experience Survey</h2>
+    <p>Please share your experience to help us improve care.</p>
+
+    <form action="{% url 'survey' %}" method="post">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label class="title">Full Name</label>
+            <input type="text" name="name" required>
+        </div>
+
+        <div class="form-group">
+            <label class="title">Contact Information</label>
+            <input type="text" name="contact" required>
+        </div>
+
+        <div class="form-group">
+            <label class="title">How would you rate your doctor?</label>
+            <div class="option-group">
+                <label class="option"><input type="radio" name="doctor" value="excellent"> Excellent</label>
+                <label class="option"><input type="radio" name="doctor" value="good"> Good</label>
+                <label class="option"><input type="radio" name="doctor" value="fair"> Fair</label>
+                <label class="option"><input type="radio" name="doctor" value="poor"> Poor</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="title">Was the hospital staff clear and helpful?</label>
+            <div class="option-group">
+                <label class="option"><input type="radio" name="staff" value="yes"> Yes</label>
+                <label class="option"><input type="radio" name="staff" value="somewhat"> Somewhat</label>
+                <label class="option"><input type="radio" name="staff" value="no"> No</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="title">What services did you use?</label>
+            <div class="option-group">
+                <label class="option"><input type="checkbox" name="services" value="consultation"> Doctor consultation</label>
+                <label class="option"><input type="checkbox" name="services" value="nursing"> Nursing care</label>
+                <label class="option"><input type="checkbox" name="services" value="lab"> Lab tests</label>
+                <label class="option"><input type="checkbox" name="services" value="pharmacy"> Pharmacy</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="title">Overall, how was your experience?</label>
+            <div class="option-group">
+                <label class="option"><input type="radio" name="overall" value="very_good"> Very Good</label>
+                <label class="option"><input type="radio" name="overall" value="good"> Good</label>
+                <label class="option"><input type="radio" name="overall" value="okay"> Okay</label>
+                <label class="option"><input type="radio" name="overall" value="bad"> Bad</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="title">Additional Feedback</label>
+            <textarea name="comments" rows="3"></textarea>
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
 </div>
 {% endblock %}

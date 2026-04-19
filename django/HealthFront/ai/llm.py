@@ -4,6 +4,7 @@ import os
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from langchain_anthropic import ChatAnthropic # pip install -U langchain-anthropic
+from langchain_openai import ChatOpenAI
 from langchain.messages import HumanMessage, AIMessage, SystemMessage
 from .models import PatientDischargeContext
 
@@ -13,8 +14,12 @@ load_dotenv()
 # llm = ChatAnthropic(
 #     model="claude-haiku-4-5-20251001",
 # )
-llm = ChatGroq(
-    model="moonshotai/kimi-k2-instruct-0905",
+# llm = ChatGroq(
+#     model="moonshotai/kimi-k2-instruct-0905",
+# )
+llm = ChatOpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    model="openai/gpt-oss-120b:free"
 )
 
 
@@ -22,6 +27,7 @@ _SYSTEM_PROMPT = """
 You are a clinical documentation assistant for Lakeland Regional Health.
 Your task is to generate a clear, compassionate, and easy-to-understand
 patient discharge summary for a nurse to review and hand to the patient.
+If using a dash, please use '-' instead. Do not use '—' or any other symbol.
 
 OUTPUT FORMAT — follow this exact section order and heading style:
 

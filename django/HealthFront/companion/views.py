@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.clickjacking import xframe_options_sameorigin
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_http_methods, require_POST
 
 from .models import DischargeDocument, PatientUserLink
 from .storage import (
@@ -185,8 +185,15 @@ def generate_discharge(request):
         return JsonResponse({"error": f"Unexpected error: {exc}"}, status=500)
 
 
+@require_http_methods(["GET", "POST"])
 def survey(request):
+    if request.method == "POST":
+        return redirect("survey_thank_you")
     return render(request, "companion/survey.html")
+
+
+def survey_thank_you(request):
+    return render(request, "companion/survey_thank_you.html")
 
 
 def patient_info(request):
