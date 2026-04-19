@@ -1,144 +1,122 @@
+{% extends "companion/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hospital Experience Survey</title>
 
-  <link rel="stylesheet" href="{% static 'companion/css/styles.css' %}">
+{% block title %}Hospital Experience Survey{% endblock %}
+{% block header_title %}Hospital Experience Survey{% endblock %}
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 40px;
+{% block header_buttons %}
+<a href="{% url 'dashboard_patient' %}" class="back-button">← Back</a>
+<a href="{% url 'logout' %}" class="logout-button">Logout</a>
+{% endblock %}
+
+{% block content %}
+<style>
+    .survey-form-wrap {
+        max-width: 600px;
+        margin: 0 auto;
+        width: 100%;
+        text-align: left;
     }
-
-    .container {
-      max-width: 600px;
-      margin: auto;
+    .survey-form-wrap h2 {
+        margin-bottom: 5px;
     }
-
-    h2 {
-      margin-bottom: 5px;
+    .survey-form-wrap .form-group {
+        margin-bottom: 20px;
     }
-
-    .form-group {
-      margin-bottom: 20px;
+    .survey-form-wrap .form-group label.title {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 8px;
     }
-
-    .form-group label.title {
-      font-weight: bold;
-      display: block;
-      margin-bottom: 8px;
+    .survey-form-wrap input,
+    .survey-form-wrap select,
+    .survey-form-wrap textarea {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        box-sizing: border-box;
     }
-
-    input, select, textarea {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
+    .survey-form-wrap .option-group {
+        margin-top: 5px;
     }
-
-    .option-group {
-      margin-top: 5px;
+    .survey-form-wrap .option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 4px 0;
     }
-
-    .option {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin: 4px 0;
+    .survey-form-wrap .option input {
+        width: auto;
+        margin: 0;
     }
-
-    .option input {
-      width: auto;
-      margin: 0;
+    .survey-form-wrap button[type="submit"] {
+        margin-top: 20px;
+        padding: 10px 15px;
+        cursor: pointer;
     }
-
-    button {
-      margin-top: 20px;
-      padding: 10px 15px;
-      cursor: pointer;
-    }
-  </style>
-</head>
-
-<body>
-
-  <div class="container">
-
+</style>
+<div class="main-center survey-form-wrap">
     <h2>Hospital Experience Survey</h2>
     <p>Please share your experience to help us improve care.</p>
 
-    <form action="#" method="post">
+    <form action="{% url 'survey' %}" method="post">
+        {% csrf_token %}
 
-      <!-- Name -->
-      <div class="form-group">
-        <label class="title">Full Name</label>
-        <input type="text" name="name" required>
-      </div>
-
-      <!-- Contact -->
-      <div class="form-group">
-        <label class="title">Contact Information</label>
-        <input type="text" name="contact" required>
-      </div>
-
-      <!-- Doctor Rating -->
-      <div class="form-group">
-        <label class="title">How would you rate your doctor?</label>
-        <div class="option-group">
-          <label class="option"><input type="radio" name="doctor" value="excellent"> Excellent</label>
-          <label class="option"><input type="radio" name="doctor" value="good"> Good</label>
-          <label class="option"><input type="radio" name="doctor" value="fair"> Fair</label>
-          <label class="option"><input type="radio" name="doctor" value="poor"> Poor</label>
+        <div class="form-group">
+            <label class="title">Full Name</label>
+            <input type="text" name="name" required>
         </div>
-      </div>
 
-      <!-- Staff Communication -->
-      <div class="form-group">
-        <label class="title">Was the hospital staff clear and helpful?</label>
-        <div class="option-group">
-          <label class="option"><input type="radio" name="staff" value="yes"> Yes</label>
-          <label class="option"><input type="radio" name="staff" value="somewhat"> Somewhat</label>
-          <label class="option"><input type="radio" name="staff" value="no"> No</label>
+        <div class="form-group">
+            <label class="title">Contact Information</label>
+            <input type="text" name="contact" required>
         </div>
-      </div>
 
-      <!-- Services Used -->
-      <div class="form-group">
-        <label class="title">What services did you use?</label>
-        <div class="option-group">
-          <label class="option"><input type="checkbox" name="services" value="consultation"> Doctor consultation</label>
-          <label class="option"><input type="checkbox" name="services" value="nursing"> Nursing care</label>
-          <label class="option"><input type="checkbox" name="services" value="lab"> Lab tests</label>
-          <label class="option"><input type="checkbox" name="services" value="pharmacy"> Pharmacy</label>
+        <div class="form-group">
+            <label class="title">How would you rate your doctor?</label>
+            <div class="option-group">
+                <label class="option"><input type="radio" name="doctor" value="excellent"> Excellent</label>
+                <label class="option"><input type="radio" name="doctor" value="good"> Good</label>
+                <label class="option"><input type="radio" name="doctor" value="fair"> Fair</label>
+                <label class="option"><input type="radio" name="doctor" value="poor"> Poor</label>
+            </div>
         </div>
-      </div>
 
-      <!-- Overall Experience -->
-      <div class="form-group">
-        <label class="title">Overall, how was your experience?</label>
-        <div class="option-group">
-          <label class="option"><input type="radio" name="overall" value="very_good"> Very Good</label>
-          <label class="option"><input type="radio" name="overall" value="good"> Good</label>
-          <label class="option"><input type="radio" name="overall" value="okay"> Okay</label>
-          <label class="option"><input type="radio" name="overall" value="bad"> Bad</label>
+        <div class="form-group">
+            <label class="title">Was the hospital staff clear and helpful?</label>
+            <div class="option-group">
+                <label class="option"><input type="radio" name="staff" value="yes"> Yes</label>
+                <label class="option"><input type="radio" name="staff" value="somewhat"> Somewhat</label>
+                <label class="option"><input type="radio" name="staff" value="no"> No</label>
+            </div>
         </div>
-      </div>
 
-      <!-- Comments -->
-      <div class="form-group">
-        <label class="title">Additional Feedback</label>
-        <textarea name="comments" rows="3"></textarea>
-      </div>
+        <div class="form-group">
+            <label class="title">What services did you use?</label>
+            <div class="option-group">
+                <label class="option"><input type="checkbox" name="services" value="consultation"> Doctor consultation</label>
+                <label class="option"><input type="checkbox" name="services" value="nursing"> Nursing care</label>
+                <label class="option"><input type="checkbox" name="services" value="lab"> Lab tests</label>
+                <label class="option"><input type="checkbox" name="services" value="pharmacy"> Pharmacy</label>
+            </div>
+        </div>
 
-      <!-- Submit -->
-      <button type="submit">Submit</button>
+        <div class="form-group">
+            <label class="title">Overall, how was your experience?</label>
+            <div class="option-group">
+                <label class="option"><input type="radio" name="overall" value="very_good"> Very Good</label>
+                <label class="option"><input type="radio" name="overall" value="good"> Good</label>
+                <label class="option"><input type="radio" name="overall" value="okay"> Okay</label>
+                <label class="option"><input type="radio" name="overall" value="bad"> Bad</label>
+            </div>
+        </div>
 
+        <div class="form-group">
+            <label class="title">Additional Feedback</label>
+            <textarea name="comments" rows="3"></textarea>
+        </div>
+
+        <button type="submit">Submit</button>
     </form>
-
-  </div>
-
-</body>
-</html>
+</div>
+{% endblock %}

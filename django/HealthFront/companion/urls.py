@@ -17,6 +17,7 @@ urlpatterns = [
         name='patient_discharge_pdf',
     ),
     path('survey/', views.survey, name='survey'),
+    path('survey/thank-you/', views.survey_thank_you, name='survey_thank_you'),
     path('patient-info/', views.patient_info, name='patient_info'),
     path('', views.home, name='home'),
     path('settings/', views.settings_view, name='settings')

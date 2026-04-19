@@ -1,0 +1,21 @@
+{% extends "companion/base.html" %}
+
+{% block title %}Thank You{% endblock %}
+{% block header_title %}Survey{% endblock %}
+
+{% block header_buttons %}
+<a href="{% url 'dashboard_patient' %}" class="back-button">← Back</a>
+<a href="{% url 'logout' %}" class="logout-button">Logout</a>
+{% endblock %}
+
+{% block content %}
+<div class="main-center">
+    <div class="page-intro">
+        <h2>Thank you for your feedback</h2>
+        <p>
+            Your responses have been received. We appreciate you taking the time to share your
+            experience—your input helps us improve care for everyone in our community.
+        </p>
+    </div>
+</div>
+{% endblock %}
