@@ -1,6 +1,6 @@
 import json
 
-from ai.db_query import build_patient_context, fetch_patient_list
+from ai.db_query import build_patient_context, fetch_patient_demographics, fetch_patient_list
 from ai.llm import generate_discharge_document
 from ai.models import CurrentVisit
 from django.contrib import messages
@@ -198,11 +198,13 @@ def survey_thank_you(request):
 
 def patient_info(request):
     patient_id = _authorized_patient_id(request)
+    patient_data = fetch_patient_demographics(patient_id) if patient_id else None
     return render(
         request,
         "companion/patient_info.html",
         {
             "patient_id": patient_id,
+            "patient_data": patient_data,
             "username": request.user.username if request.user.is_authenticated else "",
             "first_name": request.user.first_name
             if request.user.is_authenticated

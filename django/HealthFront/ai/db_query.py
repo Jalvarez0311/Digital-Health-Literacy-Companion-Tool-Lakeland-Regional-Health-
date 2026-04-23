@@ -151,6 +151,25 @@ def _fetch_hospitalizations(patient_id: int, cur) -> list[HospitalizationEvent]:
     return hospitalizations
 
 
+def fetch_patient_demographics(patient_id: int) -> dict | None:
+    """Return a plain dict of DimPatient fields for display on the patient info page."""
+    try:
+        with _get_connection() as conn, conn.cursor(cursor_factory=RealDictCursor) as cur:
+            patient = _fetch_patient(patient_id, cur)
+        return {
+            "patient_id": patient.patient_id,
+            "first_name": patient.first_name,
+            "middle_name": patient.middle_name,
+            "last_name": patient.last_name,
+            "gender": patient.gender,
+            "birth_date": patient.birth_date,
+            "ethnicity": patient.ethnicity or "Not on file",
+            "race": patient.race or "Not on file",
+        }
+    except Exception:
+        return None
+
+
 def fetch_patient_list() -> list[dict]:
     """Return [{id, name}] for every patient — used to populate the dropdown."""
     with _get_connection() as conn, conn.cursor(cursor_factory=RealDictCursor) as cur:

@@ -11,19 +11,19 @@
 <div class="main-center">
     <div class="page-intro">
         <h2>Create Discharge Summary</h2>
-        <p>Complete the visit details below to generate a patient discharge document.</p>
+        <p>Complete the visit details below to generate a discharge document.</p>
     </div>
 
     <form id="discharge-form" class="form-card" method="post" action="/discharge/generate/" style="max-width: 760px; width: 100%; text-align: left;">
         {% csrf_token %}
 
         <div class="form-group">
-            <label for="patient_search">Patient</label>
+            <label for="patient_search">Person</label>
             <input
                 type="text"
                 id="patient_search"
                 list="patient_options"
-                placeholder="Search by patient name or ID"
+                placeholder="Search by name or ID"
                 autocomplete="off"
                 required>
             <datalist id="patient_options">
@@ -33,7 +33,7 @@
             </datalist>
             <input type="hidden" id="patient_id" name="patient_id" required>
             <small id="patient-search-help" style="display:block; margin-top: 0.35rem; color: var(--text-mid);">
-                Start typing to search, then select the matching patient.
+                Start typing to search, then select a person from the list.
             </small>
         </div>
 
@@ -105,7 +105,7 @@ document.getElementById('discharge-form').addEventListener('submit', function (e
     const resultArea = document.getElementById('result-area');
 
     if (!patientIdInput.value) {
-        errorMsg.textContent = 'Please select a valid patient from the search list.';
+        errorMsg.textContent = 'Please select a valid person from the search list.';
         errorMsg.style.display = 'block';
         patientSearchInput.focus();
         return;
