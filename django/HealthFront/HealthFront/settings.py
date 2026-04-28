@@ -23,7 +23,10 @@ SECRET_KEY = os.getenv(
 )
 DEBUG = os.getenv("DEBUG", "True").strip().lower() in ("1", "true", "yes")
 _ALLOWED = os.getenv("DJANGO_ALLOWED_HOSTS", "").strip()
-ALLOWED_HOSTS = [h.strip() for h in _ALLOWED.split(",") if h.strip()]
+if _ALLOWED == "*":
+    ALLOWED_HOSTS = ["*"]
+else:
+    ALLOWED_HOSTS = [h.strip() for h in _ALLOWED.split(",") if h.strip()]
 
 
 def _postgres_database():
