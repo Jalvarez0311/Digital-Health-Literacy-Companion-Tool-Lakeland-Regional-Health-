@@ -6,7 +6,13 @@ from botocore.config import Config
 from dotenv import load_dotenv
 from tomllib import load
 
-load_dotenv(Path(__file__).resolve().parents[3] / ".env")
+# Load .env from repo root (local dev). On Railway env vars are injected directly — safe to fail.
+_here = Path(__file__).resolve()
+for _parent in _here.parents:
+    _candidate = _parent / ".env"
+    if _candidate.exists():
+        load_dotenv(_candidate)
+        break
 
 
 def _build_simple_pdf(text: str) -> bytes:
