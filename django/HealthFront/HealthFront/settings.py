@@ -28,6 +28,10 @@ if _ALLOWED == "*":
 else:
     ALLOWED_HOSTS = [h.strip() for h in _ALLOWED.split(",") if h.strip()]
 
+# CSRF: trust all origins listed in DJANGO_CSRF_TRUSTED_ORIGINS (comma-separated https:// URLs).
+_CSRF_ORIGINS = os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "").strip()
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in _CSRF_ORIGINS.split(",") if o.strip()]
+
 
 def _postgres_database():
     from pg_env import postgres_params_from_env
