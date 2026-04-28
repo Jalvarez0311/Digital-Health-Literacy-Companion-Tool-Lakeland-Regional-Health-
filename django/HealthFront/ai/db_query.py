@@ -1,9 +1,9 @@
 """builds a PatientDischargeContext from Supabase."""
 
-import os
 import psycopg2
 from psycopg2.extras import RealDictCursor
-from dotenv import load_dotenv
+
+from pg_env import postgres_params_from_env
 
 from .models import (
     PatientInformation,
@@ -15,21 +15,20 @@ from .models import (
     PatientDischargeContext,
 )
 
-load_dotenv()
-
-USER   = os.getenv("user")
-PASSWORD = os.getenv("password")
-HOST   = os.getenv("host")
-PORT   = os.getenv("port")
-DBNAME = os.getenv("dbname")
-
-if not all([USER, PASSWORD, HOST, PORT, DBNAME]):
-    raise ValueError("Missing DB env vars: user / password / host / port / dbname")
-
 
 def _get_connection():
+    p = postgres_params_from_env()
+    if not all([p["user"], p["password"], p["host"], p["port"], p["dbname"]]):
+        raise ValueError(
+            "Clinical warehouse DB missing env: user / password / host / port / dbname"
+        )
     return psycopg2.connect(
-        user=USER, password=PASSWORD, host=HOST, port=PORT, dbname=DBNAME
+        user=p["user"],
+        password=p["password"],
+        host=p["host"],
+        port=p["port"],
+        dbname=p["dbname"],
+        sslmode=p["sslmode"] or "require",
     )
 
 
