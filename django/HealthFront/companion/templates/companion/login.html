@@ -43,5 +43,53 @@
         <span data-i18n="login.noaccount">Don't have an account?</span>
         <a href="/signup/?role={{ request.GET.role }}" data-i18n="login.signup">Create one here</a>
     </p>
+
+    <form method="post" action="{% url 'demo_login' %}" class="capstone-login-form" style="width: 100%; max-width: 480px;">
+        {% csrf_token %}
+        <input type="hidden" name="role" value="{{ request.GET.role }}">
+
+        {% if request.GET.role == "patient" %}
+        <div class="form-group" style="text-align: left; margin-bottom: 0.9rem;">
+            <label for="demo_patient_search" data-i18n="login.capstone_pickpatient">Pick a patient to demo as</label>
+            <input
+                type="text"
+                id="demo_patient_search"
+                list="demo_patient_options"
+                placeholder="Search by patient name or ID"
+                autocomplete="off">
+            <datalist id="demo_patient_options">
+                {% for p in patients %}
+                    <option value="{{ p.name }} (ID: {{ p.id }})"></option>
+                {% endfor %}
+            </datalist>
+            <input type="hidden" id="demo_patient_id" name="patient_id">
+        </div>
+        {% endif %}
+
+        <button type="submit" class="capstone-login-btn" data-i18n="login.capstone">Capstone Login</button>
+    </form>
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+{% if request.GET.role == "patient" %}
+{{ patients|json_script:"demo-patients-data" }}
+<script>
+(function () {
+    const search = document.getElementById('demo_patient_search');
+    const hidden = document.getElementById('demo_patient_id');
+    const data = JSON.parse(document.getElementById('demo-patients-data').textContent || '[]');
+    const lookup = {};
+    data.forEach(function (p) {
+        lookup[p.name + ' (ID: ' + p.id + ')'] = String(p.id);
+    });
+    function sync() {
+        hidden.value = lookup[search.value.trim()] || '';
+    }
+    search.addEventListener('input', sync);
+    search.addEventListener('change', sync);
+    search.addEventListener('blur', sync);
+})();
+</script>
+{% endif %}
 {% endblock %}

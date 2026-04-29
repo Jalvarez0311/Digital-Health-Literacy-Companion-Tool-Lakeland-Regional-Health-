@@ -6,6 +6,7 @@ from ai.models import CurrentVisit
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.db import IntegrityError
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.clickjacking import xframe_options_sameorigin
@@ -97,11 +98,82 @@ def login_page(request):
         else:
             messages.error(request, "Invalid login credentials.")
 
-    return render(request, "companion/login.html")
+    role = request.GET.get("role", "")
+    patients = []
+    if role == "patient":
+        try:
+            patients = fetch_patient_list()
+        except Exception:
+            patients = []
+    return render(
+        request,
+        "companion/login.html",
+        {"patients": patients},
+    )
 
 
 def logout_user(request):
     logout(request)
+    return redirect("home")
+
+
+# Demo accounts auto-provisioned on first click; only used by the Capstone
+# Login button, not by the normal login flow.
+DEMO_NURSE_USERNAME = "demo_nurse"
+DEMO_PATIENT_USERNAME = "demo_patient"
+
+
+def _get_or_create_demo_user(username: str) -> User:
+    user, created = User.objects.get_or_create(username=username)
+    if created:
+        user.set_unusable_password()
+        user.save()
+    return user
+
+
+@require_POST
+def demo_login(request):
+    """
+    One-click demo sign-in for the Capstone showcase.
+    - role=nurse  -> sign in as the shared demo nurse account.
+    - role=patient -> sign in as the shared demo patient account, re-pointing
+      its PatientUserLink to whichever patient_id was selected.
+    """
+    role = request.POST.get("role")
+
+    if role == "nurse":
+        user = _get_or_create_demo_user(DEMO_NURSE_USERNAME)
+        login(request, user)
+        request.session["role"] = "nurse"
+        return redirect("dashboard_nurse")
+
+    if role == "patient":
+        patient_id_raw = (request.POST.get("patient_id") or "").strip()
+        if not patient_id_raw.isdigit():
+            messages.error(request, "Please select a patient before continuing.")
+            return redirect(f"/login/?role=patient")
+        patient_id = int(patient_id_raw)
+
+        user = _get_or_create_demo_user(DEMO_PATIENT_USERNAME)
+
+        # Re-point the demo link so any patient can be impersonated each session.
+        PatientUserLink.objects.filter(user=user).delete()
+        try:
+            PatientUserLink.objects.create(user=user, patient_id=patient_id)
+        except IntegrityError:
+            messages.error(
+                request,
+                "That patient is already linked to a real account. "
+                "Pick a different patient for the demo.",
+            )
+            return redirect(f"/login/?role=patient")
+
+        login(request, user)
+        request.session["role"] = "patient"
+        request.session["patient_id"] = patient_id
+        return redirect("dashboard_patient")
+
+    messages.error(request, "Unknown role for demo login.")
     return redirect("home")
 
 
